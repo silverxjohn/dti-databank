@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using DTID.Data;
-using DTID.Models;
+using DTID.BusinessLogic.Models;
 using DTID.Services;
 
 namespace DTID

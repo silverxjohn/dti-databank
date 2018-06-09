@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DTID.Models.ManageViewModels
+namespace DTID.BusinessLogic.Models.ManageViewModels
 {
     public class RemoveLoginViewModel
     {

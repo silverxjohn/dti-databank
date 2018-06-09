@@ -10,8 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using DTID.Models;
-using DTID.Models.AccountViewModels;
+using DTID.BusinessLogic.Models;
+using DTID.BusinessLogic.Models.AccountViewModels;
 using DTID.Services;
 
 namespace DTID.Controllers

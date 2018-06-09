@@ -1,6 +1,6 @@
 using System;
 
-namespace DTID.Models
+namespace DTID.BusinessLogic.Models
 {
     public class ErrorViewModel
     {

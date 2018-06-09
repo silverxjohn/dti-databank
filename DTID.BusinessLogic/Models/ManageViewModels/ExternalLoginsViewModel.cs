@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 
-namespace DTID.Models.ManageViewModels
+namespace DTID.BusinessLogic.Models.ManageViewModels
 {
     public class ExternalLoginsViewModel
     {

@@ -10,9 +10,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using DTID.Models;
-using DTID.Models.ManageViewModels;
 using DTID.Services;
+using DTID.BusinessLogic.Models;
+using DTID.BusinessLogic.Models.ManageViewModels;
 
 namespace DTID.Controllers
 {
