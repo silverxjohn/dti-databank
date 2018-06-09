@@ -1,12 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DTID.BusinessLogic.Models.AccountViewModels
+namespace DTID.BusinessLogic.ViewModels.AccountViewModels
 {
-    public class ForgotPasswordViewModel
+    public class ExternalLoginViewModel
     {
         [Required]
         [EmailAddress]

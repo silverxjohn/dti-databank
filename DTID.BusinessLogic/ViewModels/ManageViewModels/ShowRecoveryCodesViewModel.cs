@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DTID.BusinessLogic.Models.ManageViewModels
+namespace DTID.BusinessLogic.ViewModels.ManageViewModels
 {
     public class ShowRecoveryCodesViewModel
     {

@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using DTID.Services;
 using DTID.BusinessLogic.Models;
-using DTID.BusinessLogic.Models.ManageViewModels;
+using DTID.BusinessLogic.ViewModels.ManageViewModels;
 
 namespace DTID.Controllers
 {

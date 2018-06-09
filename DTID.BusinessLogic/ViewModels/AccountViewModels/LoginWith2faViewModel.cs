@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DTID.BusinessLogic.Models.AccountViewModels
+namespace DTID.BusinessLogic.ViewModels.AccountViewModels
 {
     public class LoginWith2faViewModel
     {

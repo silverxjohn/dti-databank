@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace DTID.BusinessLogic.Models.ManageViewModels
+namespace DTID.BusinessLogic.ViewModels.ManageViewModels
 {
     public class EnableAuthenticatorViewModel
     {

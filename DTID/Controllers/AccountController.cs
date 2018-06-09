@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using DTID.BusinessLogic.Models;
-using DTID.BusinessLogic.Models.AccountViewModels;
+using DTID.BusinessLogic.ViewModels.AccountViewModels;
 using DTID.Services;
 
 namespace DTID.Controllers
