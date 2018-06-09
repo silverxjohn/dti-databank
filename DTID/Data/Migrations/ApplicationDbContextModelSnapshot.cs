@@ -20,7 +20,7 @@ namespace DTID.Data.Migrations
                 .HasAnnotation("ProductVersion", "2.0.1-rtm-125")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("DTID.Models.ApplicationUser", b =>
+            modelBuilder.Entity("DTID.BusinessLogic.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
@@ -71,12 +71,14 @@ namespace DTID.Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("DTID.Models.Indicator", b =>
+            modelBuilder.Entity("DTID.BusinessLogic.Models.Indicator", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("DateCreated");
+
+                    b.Property<DateTime>("DateUpdated");
 
                     b.Property<string>("Description");
 
@@ -205,7 +207,7 @@ namespace DTID.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("DTID.Models.ApplicationUser")
+                    b.HasOne("DTID.BusinessLogic.Models.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -213,7 +215,7 @@ namespace DTID.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("DTID.Models.ApplicationUser")
+                    b.HasOne("DTID.BusinessLogic.Models.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -226,7 +228,7 @@ namespace DTID.Data.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("DTID.Models.ApplicationUser")
+                    b.HasOne("DTID.BusinessLogic.Models.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -234,7 +236,7 @@ namespace DTID.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("DTID.Models.ApplicationUser")
+                    b.HasOne("DTID.BusinessLogic.Models.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
