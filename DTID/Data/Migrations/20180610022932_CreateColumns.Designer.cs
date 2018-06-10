@@ -11,9 +11,10 @@ using System;
 namespace DTID.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180610022932_CreateColumns")]
+    partial class CreateColumns
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -101,8 +102,6 @@ namespace DTID.Data.Migrations
                     b.Property<DateTime>("DateUpdated");
 
                     b.Property<string>("Description");
-
-                    b.Property<bool>("IsActive");
 
                     b.Property<string>("Name");
 

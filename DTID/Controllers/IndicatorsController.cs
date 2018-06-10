@@ -25,7 +25,7 @@ namespace DTID.Controllers
         [HttpGet]
         public IEnumerable<Indicator> GetIndicators()
         {
-            return _context.Indicators;
+            return _context.Indicators.Where(indicator => indicator.IsActive);
         }
 
         // GET: api/Indicators/5
@@ -45,6 +45,12 @@ namespace DTID.Controllers
             }
 
             return Ok(indicator);
+        }
+
+        [HttpGet("all")]
+        public IEnumerable<Indicator> GetAllIndicator()
+        {
+            return _context.Indicators;
         }
 
         // PUT: api/Indicators/5

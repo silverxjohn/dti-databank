@@ -13,6 +13,7 @@ namespace DTID.Data
     {
 
         public DbSet<Indicator> Indicators { get; set; }
+        public DbSet<Column> Columns { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
