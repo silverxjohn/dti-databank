@@ -14,6 +14,18 @@ namespace DTID.Data
 
         public DbSet<Indicator> Indicators { get; set; }
         public DbSet<Column> Columns { get; set; }
+        public DbSet<Year> Years { get; set; }
+        public DbSet<Month> Months { get; set; }
+        public DbSet<Quarter> Quarters { get; set; }
+        public DbSet<QuarterYear> QuarterYears { get; set; }
+        public DbSet<BoardOfInvestment> BoardOfInvestments { get; set; }
+        public DbSet<BalanceOfPayment> BalanceOfPayments { get; set; }
+        public DbSet<Peza> Pezas { get; set; }
+        public DbSet<ExchangeRate> ExchangeRates { get; set; }
+        public DbSet<GrossInternationalReserve> GrossInternationalReserves { get; set; }
+        public DbSet<InflationRate> InflationRates { get; set; }
+        public DbSet<Population> Populations { get; set; }
+        public DbSet<Wage> Wages { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
