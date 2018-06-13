@@ -34,7 +34,7 @@ namespace DTID.Controllers
         {
             var vm = new DirectoryViewModel();
 
-            vm.Directories = _context.Directories.Where(directory => directory.ParentId == id).ToList();
+            vm.Directories = _context.Directories.Where(directory => directory.ParentID == id).ToList();
             vm.Indicators = _context.Indicators.Where(indicator => indicator.Parent.ID == id).ToList();
 
             return vm;

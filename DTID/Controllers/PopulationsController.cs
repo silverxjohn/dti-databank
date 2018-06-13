@@ -58,7 +58,7 @@ namespace DTID.Controllers
                 return NotFound();
             }
 
-            populationToUpdate.YearId = population.YearId;
+            populationToUpdate.YearID = population.YearID;
 
             populationToUpdate.Populations = population.Populations;
 

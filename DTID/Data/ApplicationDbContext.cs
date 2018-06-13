@@ -14,6 +14,7 @@ namespace DTID.Data
         public DbSet<Indicator> Indicators { get; set; }
         public DbSet<Column> Columns { get; set; }
         public DbSet<ColumnValues> ColumnValues { get; set; }
+        public DbSet<Category> Categories { get; set; }
         public DbSet<Directory> Directories { get; set; }
         public DbSet<Year> Years { get; set; }
         public DbSet<Month> Months { get; set; }
@@ -78,7 +79,5 @@ namespace DTID.Data
                 entry.Property("DateUpdated").CurrentValue = currentTime;
             }
         }
-
-        public DbSet<DTID.BusinessLogic.Models.User> User { get; set; }
     }
 }

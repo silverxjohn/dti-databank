@@ -58,7 +58,7 @@ namespace DTID.Controllers
                 return NotFound();
             }
 
-            pezaToUpdate.YearId = peza.YearId;
+            pezaToUpdate.YearID = peza.YearID;
 
             pezaToUpdate.Amount = peza.Amount;
 

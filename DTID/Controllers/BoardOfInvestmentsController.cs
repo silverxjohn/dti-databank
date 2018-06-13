@@ -58,7 +58,7 @@ namespace DTID.Controllers
                 return NotFound();
             }
 
-            boiToUpdate.YearId = boardOfInvestment.YearId;
+            boiToUpdate.YearID = boardOfInvestment.YearID;
 
             boiToUpdate.Amount = boardOfInvestment.Amount;
 

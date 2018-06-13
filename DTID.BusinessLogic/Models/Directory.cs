@@ -8,7 +8,7 @@ namespace DTID.BusinessLogic.Models
     {
         public int ID { get; set; }
         public string Label { get; set; }
-        public int? ParentId { get; set; }
+        public int? ParentID { get; set; }
         public Directory Parent { get; set; }
         public List<Directory> Directories { get; set; }
         public List<Indicator> Indicators { get; set; }
