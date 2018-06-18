@@ -5,70 +5,63 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using DTID.Data;
 using DTID.BusinessLogic.Models;
+using DTID.Data;
 
 namespace DTID.Controllers
 {
     [Produces("application/json")]
-    [Route("api/Indicators")]
-    public class IndicatorsController : Controller
+    [Route("api/Wages")]
+    public class WagesController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public IndicatorsController(ApplicationDbContext context)
+        public WagesController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Indicators
+        // GET: api/Wages
         [HttpGet]
-        public IEnumerable<Indicator> GetIndicators()
+        public IEnumerable<Wage> GetWages()
         {
-            return _context.Indicators.Where(indicator => indicator.IsActive);
+            return _context.Wages.Include(wage => wage.Year);
         }
 
-        // GET: api/Indicators/5
+        // GET: api/Wages/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetIndicator([FromRoute] int id)
+        public async Task<IActionResult> GetWage([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var indicator = await _context.Indicators.SingleOrDefaultAsync(m => m.ID == id);
+            var wage = await _context.Wages.SingleOrDefaultAsync(m => m.ID == id);
 
-            if (indicator == null)
+            if (wage == null)
             {
                 return NotFound();
             }
 
-            return Ok(indicator);
+            return Ok(wage);
         }
 
-        // GET: api/Indicators/all
-        [HttpGet("all")]
-        public IEnumerable<Indicator> GetAllIndicator()
-        {
-            return _context.Indicators;
-        }
-
-        // PUT: api/Indicators/5
+        // PUT: api/Wages/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutIndicator([FromRoute] int id, [FromBody] Indicator indicator)
+        public async Task<IActionResult> PutWage([FromRoute] int id, [FromBody] Wage wage)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != indicator.ID)
+            if (id != wage.ID)
             {
                 return BadRequest();
             }
 
-            _context.Entry(indicator).State = EntityState.Modified;
+            _context.Entry(wage).State = EntityState.Modified;
 
             try
             {
@@ -76,7 +69,7 @@ namespace DTID.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!IndicatorExists(id))
+                if (!WageExists(id))
                 {
                     return NotFound();
                 }
@@ -89,45 +82,45 @@ namespace DTID.Controllers
             return NoContent();
         }
 
-        // POST: api/Indicators
+        // POST: api/Wages
         [HttpPost]
-        public async Task<IActionResult> PostIndicator([FromBody] Indicator indicator)
+        public async Task<IActionResult> PostWage([FromBody] Wage wage)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.Indicators.Add(indicator);
+            _context.Wages.Add(wage);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetIndicator", new { id = indicator.ID }, indicator);
+            return CreatedAtAction("GetWage", new { id = wage.ID }, wage);
         }
 
-        // DELETE: api/Indicators/5
+        // DELETE: api/Wages/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteIndicator([FromRoute] int id)
+        public async Task<IActionResult> DeleteWage([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var indicator = await _context.Indicators.SingleOrDefaultAsync(m => m.ID == id);
-            if (indicator == null)
+            var wage = await _context.Wages.SingleOrDefaultAsync(m => m.ID == id);
+            if (wage == null)
             {
                 return NotFound();
             }
 
-            _context.Indicators.Remove(indicator);
+            _context.Wages.Remove(wage);
             await _context.SaveChangesAsync();
 
-            return Ok(indicator);
+            return Ok(wage);
         }
 
-        private bool IndicatorExists(int id)
+        private bool WageExists(int id)
         {
-            return _context.Indicators.Any(e => e.ID == id);
+            return _context.Wages.Any(e => e.ID == id);
         }
     }
 }

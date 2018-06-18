@@ -5,70 +5,63 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using DTID.Data;
 using DTID.BusinessLogic.Models;
+using DTID.Data;
 
 namespace DTID.Controllers
 {
     [Produces("application/json")]
-    [Route("api/Indicators")]
-    public class IndicatorsController : Controller
+    [Route("api/Populations")]
+    public class PopulationsController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public IndicatorsController(ApplicationDbContext context)
+        public PopulationsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Indicators
+        // GET: api/Populations
         [HttpGet]
-        public IEnumerable<Indicator> GetIndicators()
+        public IEnumerable<Population> GetPopulations()
         {
-            return _context.Indicators.Where(indicator => indicator.IsActive);
+            return _context.Populations.Include(population => population.Year);
         }
 
-        // GET: api/Indicators/5
+        // GET: api/Populations/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetIndicator([FromRoute] int id)
+        public async Task<IActionResult> GetPopulation([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var indicator = await _context.Indicators.SingleOrDefaultAsync(m => m.ID == id);
+            var population = await _context.Populations.SingleOrDefaultAsync(m => m.ID == id);
 
-            if (indicator == null)
+            if (population == null)
             {
                 return NotFound();
             }
 
-            return Ok(indicator);
+            return Ok(population);
         }
 
-        // GET: api/Indicators/all
-        [HttpGet("all")]
-        public IEnumerable<Indicator> GetAllIndicator()
-        {
-            return _context.Indicators;
-        }
-
-        // PUT: api/Indicators/5
+        // PUT: api/Populations/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutIndicator([FromRoute] int id, [FromBody] Indicator indicator)
+        public async Task<IActionResult> PutPopulation([FromRoute] int id, [FromBody] Population population)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != indicator.ID)
+            if (id != population.ID)
             {
                 return BadRequest();
             }
 
-            _context.Entry(indicator).State = EntityState.Modified;
+            _context.Entry(population).State = EntityState.Modified;
 
             try
             {
@@ -76,7 +69,7 @@ namespace DTID.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!IndicatorExists(id))
+                if (!PopulationExists(id))
                 {
                     return NotFound();
                 }
@@ -89,45 +82,45 @@ namespace DTID.Controllers
             return NoContent();
         }
 
-        // POST: api/Indicators
+        // POST: api/Populations
         [HttpPost]
-        public async Task<IActionResult> PostIndicator([FromBody] Indicator indicator)
+        public async Task<IActionResult> PostPopulation([FromBody] Population population)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.Indicators.Add(indicator);
+            _context.Populations.Add(population);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetIndicator", new { id = indicator.ID }, indicator);
+            return CreatedAtAction("GetPopulation", new { id = population.ID }, population);
         }
 
-        // DELETE: api/Indicators/5
+        // DELETE: api/Populations/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteIndicator([FromRoute] int id)
+        public async Task<IActionResult> DeletePopulation([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var indicator = await _context.Indicators.SingleOrDefaultAsync(m => m.ID == id);
-            if (indicator == null)
+            var population = await _context.Populations.SingleOrDefaultAsync(m => m.ID == id);
+            if (population == null)
             {
                 return NotFound();
             }
 
-            _context.Indicators.Remove(indicator);
+            _context.Populations.Remove(population);
             await _context.SaveChangesAsync();
 
-            return Ok(indicator);
+            return Ok(population);
         }
 
-        private bool IndicatorExists(int id)
+        private bool PopulationExists(int id)
         {
-            return _context.Indicators.Any(e => e.ID == id);
+            return _context.Populations.Any(e => e.ID == id);
         }
     }
 }
