@@ -11,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using DTID.Data;
 using DTID.BusinessLogic.Models;
 using DTID.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Cors.Internal;
 
 namespace DTID
 {
@@ -37,6 +39,12 @@ namespace DTID
             services.AddTransient<IEmailSender, EmailSender>();
 
             services.AddMvc();
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,6 +60,7 @@ namespace DTID
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+            app.UseCors("MyPolicy");
 
             app.UseStaticFiles();
 
