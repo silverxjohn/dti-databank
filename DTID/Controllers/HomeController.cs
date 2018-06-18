@@ -5,11 +5,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using DTID.BusinessLogic.Models;
+using DTID.Data;
 
 namespace DTID.Controllers
 {
     public class HomeController : Controller
     {
+        public HomeController(ApplicationDbContext context)
+        {
+            //new DatabaseSeeder(context).Run();
+        }
         public IActionResult Index()
         {
             return View();
