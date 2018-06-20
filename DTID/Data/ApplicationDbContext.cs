@@ -17,6 +17,8 @@ namespace DTID.Data
         public DbSet<Month> Months { get; set; }
         public DbSet<Quarter> Quarters { get; set; }
         public DbSet<QuarterYear> QuarterYears { get; set; }
+        public DbSet<Industry> Industrys { get; set; }
+        public DbSet<SubIndustry> SubIndustrys { get; set; }
         public DbSet<BoardOfInvestment> BoardOfInvestments { get; set; }
         public DbSet<BalanceOfPayment> BalanceOfPayments { get; set; }
         public DbSet<Peza> Pezas { get; set; }
