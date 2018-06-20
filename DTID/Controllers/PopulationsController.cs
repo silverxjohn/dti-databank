@@ -51,35 +51,22 @@ namespace DTID.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPopulation([FromRoute] int id, [FromBody] Population population)
         {
-            if (!ModelState.IsValid)
+            var populationToUpdate = _context.Populations.FirstOrDefault(populations => populations.ID == id);
+
+            if (populationToUpdate == null)
             {
-                return BadRequest(ModelState);
+                return NotFound();
             }
 
-            if (id != population.ID)
-            {
-                return BadRequest();
-            }
+            populationToUpdate.YearId = population.YearId;
+
+            populationToUpdate.Populations = population.Populations;
+
+            await _context.SaveChangesAsync();
 
             _context.Entry(population).State = EntityState.Modified;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!PopulationExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return Ok(populationToUpdate);
         }
 
         // POST: api/Populations

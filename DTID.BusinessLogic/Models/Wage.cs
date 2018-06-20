@@ -8,7 +8,6 @@ namespace DTID.BusinessLogic.Models
     public class Wage
     {
         public int ID { get; set; }
-
         public int YearId { get; set; }
         [ForeignKey("YearId")]
         public Year Year { get; set; }
