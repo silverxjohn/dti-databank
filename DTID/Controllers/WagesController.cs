@@ -51,7 +51,6 @@ namespace DTID.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutWage([FromRoute] int id, [FromBody] Wage wage)
         {
-
             var wageToUpdate = _context.Wages.FirstOrDefault(wages => wages.ID == id);
 
             if (wageToUpdate == null)
@@ -63,7 +62,7 @@ namespace DTID.Controllers
 
             wageToUpdate.Wages = wage.Wages;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             _context.Entry(wage).State = EntityState.Modified;
 
