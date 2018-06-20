@@ -32,6 +32,7 @@ namespace DTID.Data
         public DbSet<Wage> Wages { get; set; }
         public new DbSet<Role> Roles { get; set; }
         public new DbSet<User> Users { get; set; }
+        public DbSet<PurchasingManagerIndex> PurchasingManagerIndexs { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
