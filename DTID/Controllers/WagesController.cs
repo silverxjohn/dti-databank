@@ -51,35 +51,23 @@ namespace DTID.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutWage([FromRoute] int id, [FromBody] Wage wage)
         {
-            if (!ModelState.IsValid)
+
+            var wageToUpdate = _context.Wages.FirstOrDefault(wages => wages.ID == id);
+
+            if (wageToUpdate == null)
             {
-                return BadRequest(ModelState);
+                return NotFound();
             }
 
-            if (id != wage.ID)
-            {
-                return BadRequest();
-            }
+            wageToUpdate.YearId = wage.YearId;
+
+            wageToUpdate.Wages = wage.Wages;
+
+            _context.SaveChanges();
 
             _context.Entry(wage).State = EntityState.Modified;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!WageExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return Ok(wageToUpdate);
         }
 
         // POST: api/Wages
@@ -89,6 +77,7 @@ namespace DTID.Controllers
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
+
             }
 
             _context.Wages.Add(wage);
