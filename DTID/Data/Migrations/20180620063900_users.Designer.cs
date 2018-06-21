@@ -11,9 +11,10 @@ using System;
 namespace DTID.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180620063900_users")]
+    partial class users
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -352,17 +353,17 @@ namespace DTID.Data.Migrations
 
                     b.Property<string>("Email");
 
-                    b.Property<string>("FirstName");
+                    b.Property<string>("Firstname");
 
-                    b.Property<string>("LastName");
+                    b.Property<string>("Lastname");
 
                     b.Property<string>("Password");
 
-                    b.Property<int>("RoleId");
+                    b.Property<int?>("RoleID");
 
                     b.HasKey("ID");
 
-                    b.HasIndex("RoleId");
+                    b.HasIndex("RoleID");
 
                     b.ToTable("User");
                 });
@@ -602,8 +603,7 @@ namespace DTID.Data.Migrations
                 {
                     b.HasOne("DTID.BusinessLogic.Models.Role", "Role")
                         .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("RoleID");
                 });
 
             modelBuilder.Entity("DTID.BusinessLogic.Models.Wage", b =>

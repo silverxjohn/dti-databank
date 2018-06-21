@@ -25,6 +25,8 @@ namespace DTID.Data
         public DbSet<InflationRate> InflationRates { get; set; }
         public DbSet<Population> Populations { get; set; }
         public DbSet<Wage> Wages { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<User> Users { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -74,5 +76,7 @@ namespace DTID.Data
                 entry.Property("DateUpdated").CurrentValue = currentTime;
             }
         }
+
+        public DbSet<DTID.BusinessLogic.Models.User> User { get; set; }
     }
 }

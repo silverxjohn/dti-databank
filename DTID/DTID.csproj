@@ -5,6 +5,27 @@
     <UserSecretsId>aspnet-DTID-1FF7A527-38AA-48BD-9B18-3ADB38D595FB</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Data\Migrations\20180607100652_Initial.cs" />
+    <Compile Remove="Data\Migrations\20180607100652_Initial.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180609104416_CreateIndicators.cs" />
+    <Compile Remove="Data\Migrations\20180609104416_CreateIndicators.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180610022932_CreateColumns.cs" />
+    <Compile Remove="Data\Migrations\20180610022932_CreateColumns.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180610024621_AddIsActiveColumn.cs" />
+    <Compile Remove="Data\Migrations\20180610024621_AddIsActiveColumn.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180620031931_UserRoles.cs" />
+    <Compile Remove="Data\Migrations\20180620031931_UserRoles.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180620042752_Roles.cs" />
+    <Compile Remove="Data\Migrations\20180620042752_Roles.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180620045306_Users.cs" />
+    <Compile Remove="Data\Migrations\20180620045306_Users.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180620062756_SomeName.cs" />
+    <Compile Remove="Data\Migrations\20180620062756_SomeName.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180620063407_Users.cs" />
+    <Compile Remove="Data\Migrations\20180620063407_Users.Designer.cs" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.5" />
