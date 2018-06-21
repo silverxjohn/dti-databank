@@ -128,8 +128,15 @@ namespace DTID.Controllers
                 }
             }
 
-            //return Ok(_context.ExchangeRates.Include(x => x.Year).Include(y => y.Month).FirstOrDefault(z => z.ID == exchangeRate.ID));
-            return Ok();
+            var updatedExchangeRate = _context.ExchangeRates.Include(eR => eR.Year).Include(e => e.Month).Select(xc => new YearViewModel
+            {
+                ID = xc.ID,
+                YearId = xc.Year.ID,
+                Rate = xc.Rate,
+                Name = xc.Year.Name
+            }).FirstOrDefault(e => e.ID == exchangeRate.ID);
+
+            return Ok(updatedExchangeRate);
         }
 
         // POST: api/ExchangeRates
@@ -144,7 +151,15 @@ namespace DTID.Controllers
             _context.ExchangeRates.Add(exchangeRate);
             await _context.SaveChangesAsync();
 
-            return Ok(_context.ExchangeRates.Include(eR => eR.Year).Include(e => e.Month).FirstOrDefault(e => e.ID == exchangeRate.ID));
+            var createdExchangeRate = _context.ExchangeRates.Include(eR => eR.Year).Include(e => e.Month).Select(xc => new YearViewModel
+            {
+                ID = xc.ID,
+                YearId = xc.Year.ID,
+                Rate = xc.Rate,
+                Name = xc.Year.Name
+            }).FirstOrDefault(e => e.ID == exchangeRate.ID);
+
+            return Ok(createdExchangeRate);
         }
 
         // DELETE: api/ExchangeRates/5
