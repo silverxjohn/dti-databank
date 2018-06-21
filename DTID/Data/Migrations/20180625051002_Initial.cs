@@ -96,7 +96,7 @@ namespace DTID.Data.Migrations
                     ID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     DateCreated = table.Column<DateTime>(nullable: false),
-                    DateUploaded = table.Column<DateTime>(nullable: false),
+                    DateUpdated = table.Column<DateTime>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     OriginalName = table.Column<string>(nullable: true)
                 },
@@ -150,12 +150,10 @@ namespace DTID.Data.Migrations
                 name: "Indicators",
                 columns: table => new
                 {
-                    ID = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    ID = table.Column<int>(nullable: false),
                     DateCreated = table.Column<DateTime>(nullable: false),
                     DateUpdated = table.Column<DateTime>(nullable: false),
                     Description = table.Column<string>(nullable: true),
-                    FileID = table.Column<int>(nullable: true),
                     IsActive = table.Column<bool>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     ParentID = table.Column<int>(nullable: true)
@@ -164,11 +162,11 @@ namespace DTID.Data.Migrations
                 {
                     table.PrimaryKey("PK_Indicators", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Indicators_SourceFiles_FileID",
-                        column: x => x.FileID,
+                        name: "FK_Indicators_SourceFiles_ID",
+                        column: x => x.ID,
                         principalTable: "SourceFiles",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Indicators_Directories_ParentID",
                         column: x => x.ParentID,
@@ -672,11 +670,6 @@ namespace DTID.Data.Migrations
                 name: "IX_GrossInternationalReserves_YearID",
                 table: "GrossInternationalReserves",
                 column: "YearID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Indicators_FileID",
-                table: "Indicators",
-                column: "FileID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Indicators_ParentID",

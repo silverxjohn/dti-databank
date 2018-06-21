@@ -37,7 +37,7 @@ namespace DTID.Controllers
                 return BadRequest(ModelState);
             }
 
-            var wage = await _context.Wages.SingleOrDefaultAsync(m => m.ID == id);
+            var wage = await _context.Wages.Include(w => w.Year).SingleOrDefaultAsync(m => m.ID == id);
 
             if (wage == null)
             {
@@ -97,7 +97,7 @@ namespace DTID.Controllers
             _context.Wages.Add(wage);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetWage", new { id = wage.ID }, wage);
+            return Ok(_context.Wages.Include(w => w.Year).FirstOrDefault(e => e.ID == wage.ID));
         }
 
         // DELETE: api/Wages/5

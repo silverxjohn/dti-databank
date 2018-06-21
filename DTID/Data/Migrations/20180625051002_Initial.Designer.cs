@@ -12,8 +12,8 @@ using System;
 namespace DTID.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180625015712_change-column-name")]
-    partial class changecolumnname
+    [Migration("20180625051002_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -265,16 +265,13 @@ namespace DTID.Data.Migrations
 
             modelBuilder.Entity("DTID.BusinessLogic.Models.Indicator", b =>
                 {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int>("ID");
 
                     b.Property<DateTime>("DateCreated");
 
                     b.Property<DateTime>("DateUpdated");
 
                     b.Property<string>("Description");
-
-                    b.Property<int?>("FileID");
 
                     b.Property<bool>("IsActive");
 
@@ -283,8 +280,6 @@ namespace DTID.Data.Migrations
                     b.Property<int?>("ParentID");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("FileID");
 
                     b.HasIndex("ParentID");
 
@@ -787,8 +782,9 @@ namespace DTID.Data.Migrations
             modelBuilder.Entity("DTID.BusinessLogic.Models.Indicator", b =>
                 {
                     b.HasOne("DTID.BusinessLogic.Models.SourceFile", "File")
-                        .WithMany()
-                        .HasForeignKey("FileID");
+                        .WithOne("Indicator")
+                        .HasForeignKey("DTID.BusinessLogic.Models.Indicator", "ID")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("DTID.BusinessLogic.Models.Directory", "Parent")
                         .WithMany("Indicators")

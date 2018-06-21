@@ -14,6 +14,10 @@
     <Compile Remove="Data\Migrations\20180610022932_CreateColumns.Designer.cs" />
     <Compile Remove="Data\Migrations\20180621063209_Initial.cs" />
     <Compile Remove="Data\Migrations\20180621063209_Initial.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180625015355_Initial.cs" />
+    <Compile Remove="Data\Migrations\20180625015355_Initial.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180625015712_change-column-name.cs" />
+    <Compile Remove="Data\Migrations\20180625015712_change-column-name.Designer.cs" />
   </ItemGroup>
 
 

@@ -34,7 +34,7 @@ namespace DTID.Controllers
             var readStream = fileInfo.CreateReadStream();
             var mimeType = "application/vnd.ms-excel";
 
-            return File(readStream, mimeType, sourceFile.Name);
+            return File(readStream, mimeType, sourceFile.OriginalName);
         }
 
         [HttpGet("{id}/Empty")]
