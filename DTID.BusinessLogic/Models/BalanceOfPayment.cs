@@ -10,6 +10,7 @@ namespace DTID.BusinessLogic.Models
         public Month Month { get; set; }
         public QuarterYear QuarterYear { get; set; }
         public int BalanceOfPayments { get; set; }
+        public Boolean IsActive { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
     }

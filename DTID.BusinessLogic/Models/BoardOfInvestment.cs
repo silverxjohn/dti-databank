@@ -9,6 +9,7 @@ namespace DTID.BusinessLogic.Models
         public int ID { get; set; }
         public Year Year { get; set; }
         public Double Amount { get; set; }
+        public Boolean IsActive { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
     }
