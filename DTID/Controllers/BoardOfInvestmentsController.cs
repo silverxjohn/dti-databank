@@ -51,35 +51,22 @@ namespace DTID.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutBoardOfInvestment([FromRoute] int id, [FromBody] BoardOfInvestment boardOfInvestment)
         {
-            if (!ModelState.IsValid)
+            var boiToUpdate = _context.BoardOfInvestments.FirstOrDefault(bois => bois.ID == id);
+
+            if (boiToUpdate == null)
             {
-                return BadRequest(ModelState);
+                return NotFound();
             }
 
-            if (id != boardOfInvestment.ID)
-            {
-                return BadRequest();
-            }
+            boiToUpdate.YearId = boardOfInvestment.YearId;
+
+            boiToUpdate.Amount = boardOfInvestment.Amount;
+
+            await _context.SaveChangesAsync();
 
             _context.Entry(boardOfInvestment).State = EntityState.Modified;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!BoardOfInvestmentExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return Ok(boiToUpdate);
         }
 
         // POST: api/BoardOfInvestments
