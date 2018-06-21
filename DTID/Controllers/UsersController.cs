@@ -25,7 +25,7 @@ namespace DTID.Controllers
         [HttpGet]
         public IEnumerable<User> GetUser()
         {
-            return _context.User.Include(user => user.Role).ToList();
+            return _context.Users.Include(user => user.Role);
         }
 
         // GET: api/Users/5
@@ -37,7 +37,7 @@ namespace DTID.Controllers
                 return BadRequest(ModelState);
             }
 
-            var user = await _context.User.SingleOrDefaultAsync(m => m.ID == id);
+            var user = await _context.Users.SingleOrDefaultAsync(m => m.ID == id);
 
             if (user == null)
             {
@@ -91,7 +91,7 @@ namespace DTID.Controllers
                 return BadRequest(ModelState);
             }
 
-            _context.User.Add(user);
+            _context.Users.Add(user);
             await _context.SaveChangesAsync();
             var user1 = _context.Users.Include(u => u.Role).SingleOrDefault(u => u.ID == user.ID);
 
@@ -107,13 +107,13 @@ namespace DTID.Controllers
                 return BadRequest(ModelState);
             }
 
-            var user = await _context.User.SingleOrDefaultAsync(m => m.ID == id);
+            var user = await _context.Users.SingleOrDefaultAsync(m => m.ID == id);
             if (user == null)
             {
                 return NotFound();
             }
 
-            _context.User.Remove(user);
+            _context.Users.Remove(user);
             await _context.SaveChangesAsync();
 
             return Ok(user);
@@ -121,7 +121,7 @@ namespace DTID.Controllers
 
         private bool UserExists(int id)
         {
-            return _context.User.Any(e => e.ID == id);
+            return _context.Users.Any(e => e.ID == id);
         }
     }
 }

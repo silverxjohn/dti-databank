@@ -33,6 +33,7 @@ namespace DTID.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+            //DatabaseSeeder.Populate(this);
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -78,7 +79,5 @@ namespace DTID.Data
                 entry.Property("DateUpdated").CurrentValue = currentTime;
             }
         }
-
-        public DbSet<DTID.BusinessLogic.Models.User> User { get; set; }
     }
 }

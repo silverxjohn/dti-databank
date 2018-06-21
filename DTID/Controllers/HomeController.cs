@@ -35,20 +35,26 @@ namespace DTID.Controllers
             return View();
         }
 
-        [HttpGet("test")]
-        public IActionResult GetWage()
+        [HttpGet("test/{id}")]
+        public IActionResult GetWage([FromRoute] int id)
         {
-            var indicator = _context.Indicators.Include(i => i.Columns).FirstOrDefault();
-
-            dynamic data = new ExpandoObject();
-
-            foreach (var column in indicator.Columns)
+            var indicator = _context.Indicators.Include(i => i.Columns).Include("Columns.Values").Where(i => i.ID == id).First();
+            
+            var columnValues = indicator.Columns.SelectMany(column => column.Values).OrderBy(column => column.RowId).GroupBy(column => column.RowId).Select(group =>
             {
-                var values = _context.ColumnValues.Where(val => val.Column.ID == column.ID).ToList();
-                ((IDictionary<string, object>)data).Add(column.Name, values.Select(value => value.Value));
-            }
+                dynamic data = new ExpandoObject();
 
-            return Content(JsonConvert.SerializeObject(data), "application/json");
+                ((IDictionary<string, object>)data).Add("id", group.First().RowId);
+
+                foreach (var value in group)
+                {
+                    ((IDictionary<string, object>)data).Add(value.Column.Name, value.Value);
+                }
+
+                return data;
+            });
+
+            return Content(JsonConvert.SerializeObject(columnValues), "application/json");
         }
 
         [HttpPost("upload")]

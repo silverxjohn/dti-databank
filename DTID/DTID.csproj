@@ -12,6 +12,16 @@
     <Compile Remove="Data\Migrations\20180609104416_CreateIndicators.Designer.cs" />
     <Compile Remove="Data\Migrations\20180610022932_CreateColumns.cs" />
     <Compile Remove="Data\Migrations\20180610022932_CreateColumns.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180620032527_Initial.cs" />
+    <Compile Remove="Data\Migrations\20180620032527_Initial.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180620033431_AddColumnType.cs" />
+    <Compile Remove="Data\Migrations\20180620033431_AddColumnType.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180620054453_AddColumnValues.cs" />
+    <Compile Remove="Data\Migrations\20180620054453_AddColumnValues.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180620070928_AddRowId.cs" />
+    <Compile Remove="Data\Migrations\20180620070928_AddRowId.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180621013634_Initial.cs" />
+    <Compile Remove="Data\Migrations\20180621013634_Initial.Designer.cs" />
   </ItemGroup>
 
 
