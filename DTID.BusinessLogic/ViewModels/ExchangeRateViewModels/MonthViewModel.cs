@@ -8,6 +8,8 @@ namespace DTID.BusinessLogic.ViewModels.ExchangeRateViewModels
     {
         public int ID { get; set; }
         public int MonthId { get; set; }
+        public string YearName { get; set; }
+        public int YearId { get; set; }
         public string Name { get; set; }
         public double Rate { get; set; }
     }

@@ -22,24 +22,56 @@ namespace DTID.Controllers
             _context = context;
         }
 
-        // GET: api/ExchangeRates
-        [HttpGet]
+        // GET: api/ExchangeRates/Monthly for month data
+        [HttpGet("Monthly")]
         public IEnumerable<YearViewModel> GetExchangeRates()
+        {
+            var exchangeRates = _context.ExchangeRates.Include(ex => ex.Month).Include(ez => ez.Year);
+
+            var data = new Dictionary<string, object>();
+
+            var ratess = exchangeRates.Where(eRates => eRates.MonthID != null).GroupBy(x => x.YearId).ToList();
+
+            var rates = ratess.SelectMany(r => {
+                var vm = new List<YearViewModel>();
+                foreach (var eRates in r)
+                {
+                    vm.Add(new YearViewModel
+                    {
+                        ID = eRates.ID,
+                        YearId = eRates.Year.ID,
+                        MonthId = eRates.Month.ID,
+                        Name = eRates.Year.Name,
+                        Rate = eRates.Rate,
+                        Months = exchangeRates.Where(monthRate => monthRate.MonthID != null).Where(monthRate => monthRate.Year.ID == eRates.Year.ID).Select(monthRate => new MonthViewModel
+                        {
+                            ID = monthRate.ID,
+                            MonthId = monthRate.Month.ID,
+                            YearName = eRates.Year.Name,
+                            YearId = eRates.Year.ID,
+                            Name = monthRate.Month.Name,
+                            Rate = monthRate.Rate
+                        }).ToList()
+                    });
+                }
+                return vm;
+            }).GroupBy(y => y.YearId).Select(g => g.First());
+
+            return rates;
+        }
+
+        // GET: api/ExchangeRates/Annual for year data
+        [HttpGet("Annual")]
+        public IEnumerable<YearViewModel> GetExchangeRatesMonth()
         {
             var exchangeRates = _context.ExchangeRates;
 
-            var rates = exchangeRates.Where(eRates => eRates.MonthID == null).Select(eRates => new YearViewModel
+            var rates = exchangeRates.Where(er => er.MonthID == null).Select(eRates => new YearViewModel
             {
                 ID = eRates.ID,
                 YearId = eRates.Year.ID,
                 Name = eRates.Year.Name,
                 Rate = eRates.Rate,
-                Months = exchangeRates.Where(monthRate => monthRate.MonthID != null).Where(monthRate => monthRate.Year.ID == eRates.Year.ID).Select(monthRate => new MonthViewModel {
-                    ID = monthRate.ID,
-                    MonthId = monthRate.Month.ID,
-                    Name = monthRate.Month.Name,
-                    Rate = monthRate.Rate
-                }).ToList()
             }).ToList();
 
             return rates;
@@ -96,7 +128,8 @@ namespace DTID.Controllers
                 }
             }
 
-            return NoContent();
+            //return Ok(_context.ExchangeRates.Include(x => x.Year).Include(y => y.Month).FirstOrDefault(z => z.ID == exchangeRate.ID));
+            return Ok();
         }
 
         // POST: api/ExchangeRates
@@ -111,7 +144,7 @@ namespace DTID.Controllers
             _context.ExchangeRates.Add(exchangeRate);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetExchangeRate", new { id = exchangeRate.ID }, exchangeRate);
+            return Ok(_context.ExchangeRates.Include(eR => eR.Year).Include(e => e.Month).FirstOrDefault(e => e.ID == exchangeRate.ID));
         }
 
         // DELETE: api/ExchangeRates/5
