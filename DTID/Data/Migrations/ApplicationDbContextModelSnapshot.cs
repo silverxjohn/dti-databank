@@ -120,7 +120,7 @@ namespace DTID.Data.Migrations
                     b.ToTable("BoardOfInvestments");
                 });
 
-            modelBuilder.Entity("DTID.BusinessLogic.Models.Column", b =>
+            modelBuilder.Entity("DTID.BusinessLogic.Models.Category", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
@@ -129,7 +129,29 @@ namespace DTID.Data.Migrations
 
                     b.Property<DateTime>("DateUpdated");
 
+                    b.Property<string>("Description");
+
                     b.Property<int?>("IndicatorID");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("IndicatorID");
+
+                    b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("DTID.BusinessLogic.Models.Column", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("CategoryID");
+
+                    b.Property<DateTime>("DateCreated");
+
+                    b.Property<DateTime>("DateUpdated");
 
                     b.Property<string>("Name");
 
@@ -137,7 +159,7 @@ namespace DTID.Data.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("IndicatorID");
+                    b.HasIndex("CategoryID");
 
                     b.ToTable("Columns");
                 });
@@ -583,11 +605,18 @@ namespace DTID.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("DTID.BusinessLogic.Models.Column", b =>
+            modelBuilder.Entity("DTID.BusinessLogic.Models.Category", b =>
                 {
                     b.HasOne("DTID.BusinessLogic.Models.Indicator", "Indicator")
-                        .WithMany("Columns")
+                        .WithMany("Categories")
                         .HasForeignKey("IndicatorID");
+                });
+
+            modelBuilder.Entity("DTID.BusinessLogic.Models.Column", b =>
+                {
+                    b.HasOne("DTID.BusinessLogic.Models.Category", "Category")
+                        .WithMany("Columns")
+                        .HasForeignKey("CategoryID");
                 });
 
             modelBuilder.Entity("DTID.BusinessLogic.Models.ColumnValues", b =>

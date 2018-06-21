@@ -12,6 +12,7 @@ namespace DTID.Data
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<Indicator> Indicators { get; set; }
+        public DbSet<Category> Categories { get; set; }
         public DbSet<Column> Columns { get; set; }
         public DbSet<ColumnValues> ColumnValues { get; set; }
         public DbSet<Directory> Directories { get; set; }

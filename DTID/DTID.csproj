@@ -22,6 +22,10 @@
     <Compile Remove="Data\Migrations\20180620070928_AddRowId.Designer.cs" />
     <Compile Remove="Data\Migrations\20180621013634_Initial.cs" />
     <Compile Remove="Data\Migrations\20180621013634_Initial.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180621015916_Initial.cs" />
+    <Compile Remove="Data\Migrations\20180621015916_Initial.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180621031745_Initial1.cs" />
+    <Compile Remove="Data\Migrations\20180621031745_Initial1.Designer.cs" />
   </ItemGroup>
 
 

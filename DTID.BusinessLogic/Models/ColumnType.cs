@@ -8,6 +8,8 @@ namespace DTID.BusinessLogic.Models
     {
         Label = 1,
         Number = 2,
-        Time = 3
+        Year = 3,
+        Quarter = 4,
+        Month = 5
     }
 }

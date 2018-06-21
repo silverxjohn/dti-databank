@@ -199,17 +199,17 @@ namespace DTID.Data.Migrations
                     Amount = table.Column<double>(nullable: false),
                     DateCreated = table.Column<DateTime>(nullable: false),
                     DateUpdated = table.Column<DateTime>(nullable: false),
-                    YearID = table.Column<int>(nullable: true)
+                    YearId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_BoardOfInvestments", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_BoardOfInvestments_Years_YearID",
-                        column: x => x.YearID,
+                        name: "FK_BoardOfInvestments_Years_YearId",
+                        column: x => x.YearId,
                         principalTable: "Years",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -308,17 +308,17 @@ namespace DTID.Data.Migrations
                     Amount = table.Column<double>(nullable: false),
                     DateCreated = table.Column<DateTime>(nullable: false),
                     DateUpdated = table.Column<DateTime>(nullable: false),
-                    YearID = table.Column<int>(nullable: true)
+                    YearId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Pezas", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Pezas_Years_YearID",
-                        column: x => x.YearID,
+                        name: "FK_Pezas_Years_YearId",
+                        column: x => x.YearId,
                         principalTable: "Years",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -392,14 +392,37 @@ namespace DTID.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Columns",
+                name: "Categories",
                 columns: table => new
                 {
                     ID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     DateCreated = table.Column<DateTime>(nullable: false),
                     DateUpdated = table.Column<DateTime>(nullable: false),
+                    Description = table.Column<string>(nullable: true),
                     IndicatorID = table.Column<int>(nullable: true),
+                    Name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Categories", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Categories_Indicators_IndicatorID",
+                        column: x => x.IndicatorID,
+                        principalTable: "Indicators",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Columns",
+                columns: table => new
+                {
+                    ID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    CategoryID = table.Column<int>(nullable: true),
+                    DateCreated = table.Column<DateTime>(nullable: false),
+                    DateUpdated = table.Column<DateTime>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     Type = table.Column<int>(nullable: false)
                 },
@@ -407,9 +430,9 @@ namespace DTID.Data.Migrations
                 {
                     table.PrimaryKey("PK_Columns", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Columns_Indicators_IndicatorID",
-                        column: x => x.IndicatorID,
-                        principalTable: "Indicators",
+                        name: "FK_Columns_Categories_CategoryID",
+                        column: x => x.CategoryID,
+                        principalTable: "Categories",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -467,14 +490,19 @@ namespace DTID.Data.Migrations
                 column: "YearID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BoardOfInvestments_YearID",
+                name: "IX_BoardOfInvestments_YearId",
                 table: "BoardOfInvestments",
-                column: "YearID");
+                column: "YearId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Columns_IndicatorID",
-                table: "Columns",
+                name: "IX_Categories_IndicatorID",
+                table: "Categories",
                 column: "IndicatorID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Columns_CategoryID",
+                table: "Columns",
+                column: "CategoryID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ColumnValues_ColumnID",
@@ -522,9 +550,9 @@ namespace DTID.Data.Migrations
                 column: "YearID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Pezas_YearID",
+                name: "IX_Pezas_YearId",
                 table: "Pezas",
-                column: "YearID");
+                column: "YearId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Populations_YearId",
@@ -613,6 +641,9 @@ namespace DTID.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Years");
+
+            migrationBuilder.DropTable(
+                name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "Indicators");
