@@ -12,8 +12,8 @@ using System;
 namespace DTID.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180619053105_Initial")]
-    partial class Initial
+    [Migration("20180620070928_AddRowId")]
+    partial class AddRowId
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -143,6 +143,28 @@ namespace DTID.Data.Migrations
                     b.ToTable("Columns");
                 });
 
+            modelBuilder.Entity("DTID.BusinessLogic.Models.ColumnValues", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("ColumnID");
+
+                    b.Property<DateTime>("DateCreated");
+
+                    b.Property<DateTime>("DateUpdated");
+
+                    b.Property<int>("RowId");
+
+                    b.Property<string>("Value");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ColumnID");
+
+                    b.ToTable("ColumnValues");
+                });
+
             modelBuilder.Entity("DTID.BusinessLogic.Models.Directory", b =>
                 {
                     b.Property<int>("ID")
@@ -235,6 +257,24 @@ namespace DTID.Data.Migrations
                     b.ToTable("Indicators");
                 });
 
+            modelBuilder.Entity("DTID.BusinessLogic.Models.Industry", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("QuarterID");
+
+                    b.Property<int?>("YearID");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("QuarterID");
+
+                    b.HasIndex("YearID");
+
+                    b.ToTable("Industrys");
+                });
+
             modelBuilder.Entity("DTID.BusinessLogic.Models.InflationRate", b =>
                 {
                     b.Property<int>("ID")
@@ -315,6 +355,36 @@ namespace DTID.Data.Migrations
                     b.ToTable("Populations");
                 });
 
+            modelBuilder.Entity("DTID.BusinessLogic.Models.PurchasingManagerIndex", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<double>("CompositeIndex");
+
+                    b.Property<DateTime>("DateCreated");
+
+                    b.Property<DateTime>("DateUpdated");
+
+                    b.Property<int?>("IndustryID");
+
+                    b.Property<int?>("MonthID");
+
+                    b.Property<double>("PMI");
+
+                    b.Property<int?>("YearID");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("IndustryID");
+
+                    b.HasIndex("MonthID");
+
+                    b.HasIndex("YearID");
+
+                    b.ToTable("PurchasingManagerIndexs");
+                });
+
             modelBuilder.Entity("DTID.BusinessLogic.Models.Quarter", b =>
                 {
                     b.Property<int>("ID")
@@ -347,6 +417,26 @@ namespace DTID.Data.Migrations
                     b.HasIndex("YearID");
 
                     b.ToTable("QuarterYears");
+                });
+
+            modelBuilder.Entity("DTID.BusinessLogic.Models.SubIndustry", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("DateCreated");
+
+                    b.Property<DateTime>("DateUpdated");
+
+                    b.Property<int?>("IndustryID");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("IndustryID");
+
+                    b.ToTable("SubIndustrys");
                 });
 
             modelBuilder.Entity("DTID.BusinessLogic.Models.Wage", b =>
@@ -522,6 +612,13 @@ namespace DTID.Data.Migrations
                         .HasForeignKey("IndicatorID");
                 });
 
+            modelBuilder.Entity("DTID.BusinessLogic.Models.ColumnValues", b =>
+                {
+                    b.HasOne("DTID.BusinessLogic.Models.Column", "Column")
+                        .WithMany("Values")
+                        .HasForeignKey("ColumnID");
+                });
+
             modelBuilder.Entity("DTID.BusinessLogic.Models.Directory", b =>
                 {
                     b.HasOne("DTID.BusinessLogic.Models.Directory", "Parent")
@@ -558,6 +655,17 @@ namespace DTID.Data.Migrations
                         .HasForeignKey("ParentID");
                 });
 
+            modelBuilder.Entity("DTID.BusinessLogic.Models.Industry", b =>
+                {
+                    b.HasOne("DTID.BusinessLogic.Models.Quarter", "Quarter")
+                        .WithMany()
+                        .HasForeignKey("QuarterID");
+
+                    b.HasOne("DTID.BusinessLogic.Models.Year", "Year")
+                        .WithMany()
+                        .HasForeignKey("YearID");
+                });
+
             modelBuilder.Entity("DTID.BusinessLogic.Models.InflationRate", b =>
                 {
                     b.HasOne("DTID.BusinessLogic.Models.Month", "Month")
@@ -583,6 +691,21 @@ namespace DTID.Data.Migrations
                         .HasForeignKey("YearID");
                 });
 
+            modelBuilder.Entity("DTID.BusinessLogic.Models.PurchasingManagerIndex", b =>
+                {
+                    b.HasOne("DTID.BusinessLogic.Models.Industry", "Industry")
+                        .WithMany()
+                        .HasForeignKey("IndustryID");
+
+                    b.HasOne("DTID.BusinessLogic.Models.Month", "Month")
+                        .WithMany()
+                        .HasForeignKey("MonthID");
+
+                    b.HasOne("DTID.BusinessLogic.Models.Year", "Year")
+                        .WithMany()
+                        .HasForeignKey("YearID");
+                });
+
             modelBuilder.Entity("DTID.BusinessLogic.Models.QuarterYear", b =>
                 {
                     b.HasOne("DTID.BusinessLogic.Models.Quarter", "Quarter")
@@ -592,6 +715,13 @@ namespace DTID.Data.Migrations
                     b.HasOne("DTID.BusinessLogic.Models.Year", "Year")
                         .WithMany()
                         .HasForeignKey("YearID");
+                });
+
+            modelBuilder.Entity("DTID.BusinessLogic.Models.SubIndustry", b =>
+                {
+                    b.HasOne("DTID.BusinessLogic.Models.Industry", "Industry")
+                        .WithMany()
+                        .HasForeignKey("IndustryID");
                 });
 
             modelBuilder.Entity("DTID.BusinessLogic.Models.Wage", b =>

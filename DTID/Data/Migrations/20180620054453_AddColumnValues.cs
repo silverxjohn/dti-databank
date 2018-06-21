@@ -5,42 +5,42 @@ using System.Collections.Generic;
 
 namespace DTID.Data.Migrations
 {
-    public partial class CreateColumns : Migration
+    public partial class AddColumnValues : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Columns",
+                name: "ColumnValues",
                 columns: table => new
                 {
                     ID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    ColumnID = table.Column<int>(nullable: true),
                     DateCreated = table.Column<DateTime>(nullable: false),
                     DateUpdated = table.Column<DateTime>(nullable: false),
-                    IndicatorID = table.Column<int>(nullable: true),
-                    Name = table.Column<string>(nullable: true)
+                    Value = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Columns", x => x.ID);
+                    table.PrimaryKey("PK_ColumnValues", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Columns_Indicators_IndicatorID",
-                        column: x => x.IndicatorID,
-                        principalTable: "Indicators",
+                        name: "FK_ColumnValues_Columns_ColumnID",
+                        column: x => x.ColumnID,
+                        principalTable: "Columns",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Columns_IndicatorID",
-                table: "Columns",
-                column: "IndicatorID");
+                name: "IX_ColumnValues_ColumnID",
+                table: "ColumnValues",
+                column: "ColumnID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Columns");
+                name: "ColumnValues");
         }
     }
 }

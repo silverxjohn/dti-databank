@@ -229,6 +229,32 @@ namespace DTID.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Industrys",
+                columns: table => new
+                {
+                    ID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    QuarterID = table.Column<int>(nullable: true),
+                    YearID = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Industrys", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Industrys_Quarters_QuarterID",
+                        column: x => x.QuarterID,
+                        principalTable: "Quarters",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Industrys_Years_YearID",
+                        column: x => x.YearID,
+                        principalTable: "Years",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "InflationRates",
                 columns: table => new
                 {
@@ -358,8 +384,7 @@ namespace DTID.Data.Migrations
                     DateCreated = table.Column<DateTime>(nullable: false),
                     DateUpdated = table.Column<DateTime>(nullable: false),
                     IndicatorID = table.Column<int>(nullable: true),
-                    Name = table.Column<string>(nullable: true),
-                    Type = table.Column<int>(nullable: false)
+                    Name = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -368,6 +393,65 @@ namespace DTID.Data.Migrations
                         name: "FK_Columns_Indicators_IndicatorID",
                         column: x => x.IndicatorID,
                         principalTable: "Indicators",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PurchasingManagerIndexs",
+                columns: table => new
+                {
+                    ID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    CompositeIndex = table.Column<double>(nullable: false),
+                    DateCreated = table.Column<DateTime>(nullable: false),
+                    DateUpdated = table.Column<DateTime>(nullable: false),
+                    IndustryID = table.Column<int>(nullable: true),
+                    MonthID = table.Column<int>(nullable: true),
+                    PMI = table.Column<double>(nullable: false),
+                    YearID = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PurchasingManagerIndexs", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_PurchasingManagerIndexs_Industrys_IndustryID",
+                        column: x => x.IndustryID,
+                        principalTable: "Industrys",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PurchasingManagerIndexs_Months_MonthID",
+                        column: x => x.MonthID,
+                        principalTable: "Months",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PurchasingManagerIndexs_Years_YearID",
+                        column: x => x.YearID,
+                        principalTable: "Years",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SubIndustrys",
+                columns: table => new
+                {
+                    ID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    DateCreated = table.Column<DateTime>(nullable: false),
+                    DateUpdated = table.Column<DateTime>(nullable: false),
+                    IndustryID = table.Column<int>(nullable: true),
+                    Name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SubIndustrys", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_SubIndustrys_Industrys_IndustryID",
+                        column: x => x.IndustryID,
+                        principalTable: "Industrys",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -442,6 +526,16 @@ namespace DTID.Data.Migrations
                 column: "ParentID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Industrys_QuarterID",
+                table: "Industrys",
+                column: "QuarterID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Industrys_YearID",
+                table: "Industrys",
+                column: "YearID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_InflationRates_MonthID",
                 table: "InflationRates",
                 column: "MonthID");
@@ -462,6 +556,21 @@ namespace DTID.Data.Migrations
                 column: "YearID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PurchasingManagerIndexs_IndustryID",
+                table: "PurchasingManagerIndexs",
+                column: "IndustryID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PurchasingManagerIndexs_MonthID",
+                table: "PurchasingManagerIndexs",
+                column: "MonthID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PurchasingManagerIndexs_YearID",
+                table: "PurchasingManagerIndexs",
+                column: "YearID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_QuarterYears_QuarterID",
                 table: "QuarterYears",
                 column: "QuarterID");
@@ -470,6 +579,11 @@ namespace DTID.Data.Migrations
                 name: "IX_QuarterYears_YearID",
                 table: "QuarterYears",
                 column: "YearID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SubIndustrys_IndustryID",
+                table: "SubIndustrys",
+                column: "IndustryID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Wages_YearID",
@@ -516,7 +630,13 @@ namespace DTID.Data.Migrations
                 name: "Populations");
 
             migrationBuilder.DropTable(
+                name: "PurchasingManagerIndexs");
+
+            migrationBuilder.DropTable(
                 name: "QuarterYears");
+
+            migrationBuilder.DropTable(
+                name: "SubIndustrys");
 
             migrationBuilder.DropTable(
                 name: "Wages");
@@ -528,13 +648,16 @@ namespace DTID.Data.Migrations
                 name: "Months");
 
             migrationBuilder.DropTable(
+                name: "Industrys");
+
+            migrationBuilder.DropTable(
+                name: "Directories");
+
+            migrationBuilder.DropTable(
                 name: "Quarters");
 
             migrationBuilder.DropTable(
                 name: "Years");
-
-            migrationBuilder.DropTable(
-                name: "Directories");
 
             migrationBuilder.DropIndex(
                 name: "RoleNameIndex",

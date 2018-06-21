@@ -4,13 +4,12 @@ using System.Text;
 
 namespace DTID.BusinessLogic.Models
 {
-    public class Column
+    public class ColumnValues
     {
         public int ID { get; set; }
-        public string Name { get; set; }
-        public ColumnType Type { get; set; }
-        public Indicator Indicator { get; set; }
-        public List<ColumnValues> Values { get; set; }
+        public Column Column { get; set; }
+        public string Value { get; set; }
+        public int RowId { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
     }

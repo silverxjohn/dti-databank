@@ -12,9 +12,10 @@ using System;
 namespace DTID.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180620033431_AddColumnType")]
+    partial class AddColumnType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -140,28 +141,6 @@ namespace DTID.Data.Migrations
                     b.HasIndex("IndicatorID");
 
                     b.ToTable("Columns");
-                });
-
-            modelBuilder.Entity("DTID.BusinessLogic.Models.ColumnValues", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int?>("ColumnID");
-
-                    b.Property<DateTime>("DateCreated");
-
-                    b.Property<DateTime>("DateUpdated");
-
-                    b.Property<int>("RowId");
-
-                    b.Property<string>("Value");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("ColumnID");
-
-                    b.ToTable("ColumnValues");
                 });
 
             modelBuilder.Entity("DTID.BusinessLogic.Models.Directory", b =>
@@ -609,13 +588,6 @@ namespace DTID.Data.Migrations
                     b.HasOne("DTID.BusinessLogic.Models.Indicator", "Indicator")
                         .WithMany("Columns")
                         .HasForeignKey("IndicatorID");
-                });
-
-            modelBuilder.Entity("DTID.BusinessLogic.Models.ColumnValues", b =>
-                {
-                    b.HasOne("DTID.BusinessLogic.Models.Column", "Column")
-                        .WithMany("Values")
-                        .HasForeignKey("ColumnID");
                 });
 
             modelBuilder.Entity("DTID.BusinessLogic.Models.Directory", b =>

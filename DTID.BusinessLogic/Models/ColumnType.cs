@@ -8,6 +8,6 @@ namespace DTID.BusinessLogic.Models
     {
         Label = 1,
         Number = 2,
-        Percentage = 3
+        Time = 3
     }
 }

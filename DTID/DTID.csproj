@@ -5,11 +5,22 @@
     <UserSecretsId>aspnet-DTID-1FF7A527-38AA-48BD-9B18-3ADB38D595FB</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Data\Migrations\20180607100652_Initial.cs" />
+    <Compile Remove="Data\Migrations\20180607100652_Initial.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180609104416_CreateIndicators.cs" />
+    <Compile Remove="Data\Migrations\20180609104416_CreateIndicators.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180610022932_CreateColumns.cs" />
+    <Compile Remove="Data\Migrations\20180610022932_CreateColumns.Designer.cs" />
+  </ItemGroup>
+
 
   <ItemGroup>
+    <PackageReference Include="DotNetCore.NPOI" Version="1.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.1" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.2" PrivateAssets="All" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,6 +31,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DTID.BusinessLogic\DTID.BusinessLogic.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\excels\" />
   </ItemGroup>
 
 </Project>
