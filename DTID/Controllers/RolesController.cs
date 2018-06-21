@@ -79,7 +79,9 @@ namespace DTID.Controllers
                 }
             }
 
-            return NoContent();
+            var updatedRole = _context.Roles.FirstOrDefault(r => r.ID == id);
+
+            return Ok(updatedRole);
         }
 
         // POST: api/Roles

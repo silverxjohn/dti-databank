@@ -79,7 +79,9 @@ namespace DTID.Controllers
                 }
             }
 
-            return NoContent();
+            var updatedUser = _context.Users.FirstOrDefault(r => r.ID == id);
+
+            return Ok(updatedUser);
         }
 
         // POST: api/Users

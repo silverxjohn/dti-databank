@@ -27,8 +27,8 @@ namespace DTID.Data
         public DbSet<InflationRate> InflationRates { get; set; }
         public DbSet<Population> Populations { get; set; }
         public DbSet<Wage> Wages { get; set; }
-        public DbSet<Role> Roles { get; set; }
-        public DbSet<User> Users { get; set; }
+        public new DbSet<Role> Roles { get; set; }
+        public new DbSet<User> Users { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)

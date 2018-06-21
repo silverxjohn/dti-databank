@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace DTID.BusinessLogic.Models
@@ -13,8 +15,11 @@ namespace DTID.BusinessLogic.Models
         public string Password { get; set; }
         public string Contact { get; set; }
         public int RoleId { get; set; }
+        [ForeignKey("RoleId")]
         public Role Role { get; set; }
+        [DisplayFormat(DataFormatString = "{0:MMM dd, yyyy}")]
         public DateTime DateCreated { get; set; }
+        [DisplayFormat(DataFormatString = "{0:MMM dd, yyyy}")]
         public DateTime DateUpdated { get; set; }
     }
 }
