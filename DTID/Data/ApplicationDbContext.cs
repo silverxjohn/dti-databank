@@ -12,7 +12,6 @@ namespace DTID.Data
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<Indicator> Indicators { get; set; }
-        public DbSet<Category> Categories { get; set; }
         public DbSet<Column> Columns { get; set; }
         public DbSet<ColumnValues> ColumnValues { get; set; }
         public DbSet<Directory> Directories { get; set; }
@@ -28,13 +27,12 @@ namespace DTID.Data
         public DbSet<InflationRate> InflationRates { get; set; }
         public DbSet<Population> Populations { get; set; }
         public DbSet<Wage> Wages { get; set; }
-        public DbSet<Role> Roles { get; set; }
-        public DbSet<User> Users { get; set; }
+        public new DbSet<Role> Roles { get; set; }
+        public new DbSet<User> Users { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
-            //DatabaseSeeder.Populate(this);
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -80,5 +78,7 @@ namespace DTID.Data
                 entry.Property("DateUpdated").CurrentValue = currentTime;
             }
         }
+
+        public DbSet<DTID.BusinessLogic.Models.User> User { get; set; }
     }
 }
