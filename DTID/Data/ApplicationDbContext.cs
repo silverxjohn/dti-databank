@@ -80,5 +80,7 @@ namespace DTID.Data
         }
 
         public DbSet<DTID.BusinessLogic.Models.User> User { get; set; }
+
+        public DbSet<DTID.BusinessLogic.Models.Log> Logs { get; set; }
     }
 }

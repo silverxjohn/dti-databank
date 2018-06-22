@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DTID.BusinessLogic.Models;
 using DTID.Data;
+using DTID.Logger;
 
 namespace DTID.Controllers
 {
@@ -15,10 +16,12 @@ namespace DTID.Controllers
     public class RolesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly LogHelper _logger;
 
         public RolesController(ApplicationDbContext context)
         {
             _context = context;
+            _logger = new LogHelper(context);
         }
 
         // GET: api/Roles
@@ -79,7 +82,13 @@ namespace DTID.Controllers
                 }
             }
 
+            var roles = new Role();
+
+            roles.Name = role.Name;
+            
             var updatedRole = _context.Roles.FirstOrDefault(r => r.ID == id);
+
+            _logger.Log(Logger.Action.Update, roles.Name);
 
             return Ok(updatedRole);
         }
@@ -95,6 +104,12 @@ namespace DTID.Controllers
 
             _context.Roles.Add(role);
             await _context.SaveChangesAsync();
+
+            var roles = new Role();
+
+            roles.Name = role.Name;
+
+            _logger.Log(Logger.Action.Create, role.Name);
 
             return CreatedAtAction("GetRole", new { id = role.ID }, role);
         }
@@ -116,6 +131,8 @@ namespace DTID.Controllers
 
             _context.Roles.Remove(role);
             await _context.SaveChangesAsync();
+
+            _logger.Log(Logger.Action.Delete, role.Name);
 
             return Ok(role);
         }

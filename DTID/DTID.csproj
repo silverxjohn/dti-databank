@@ -12,13 +12,24 @@
     <Compile Remove="Data\Migrations\20180609104416_CreateIndicators.Designer.cs" />
     <Compile Remove="Data\Migrations\20180610022932_CreateColumns.cs" />
     <Compile Remove="Data\Migrations\20180610022932_CreateColumns.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180621030450_sdfsdf.cs" />
+    <Compile Remove="Data\Migrations\20180621030450_sdfsdf.Designer.cs" />
     <Compile Remove="Data\Migrations\20180621041308_ttt.cs" />
     <Compile Remove="Data\Migrations\20180621041308_ttt.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180621150827_asd.cs" />
+    <Compile Remove="Data\Migrations\20180621150827_asd.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180622023608_asd.cs" />
+    <Compile Remove="Data\Migrations\20180622023608_asd.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180622030627_asd.cs" />
+    <Compile Remove="Data\Migrations\20180622030627_asd.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180622061934_sdff.cs" />
+    <Compile Remove="Data\Migrations\20180622061934_sdff.Designer.cs" />
   </ItemGroup>
 
 
   <ItemGroup>
     <PackageReference Include="DotNetCore.NPOI" Version="1.0.2" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.Cors" Version="5.2.6" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.1" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.2" PrivateAssets="All" />

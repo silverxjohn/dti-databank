@@ -21,5 +21,10 @@ namespace DTID.BusinessLogic.Models
         public DateTime DateCreated { get; set; }
         [DisplayFormat(DataFormatString = "{0:MMM dd, yyyy}")]
         public DateTime DateUpdated { get; set; }
+
+        public override string ToString()
+        {
+            return $"{FirstName} {LastName}";
+        }
     }
 }
