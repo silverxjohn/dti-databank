@@ -16,5 +16,10 @@ namespace DTID.BusinessLogic.Models
         public Role Role { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
+
+        public override string ToString()
+        {
+            return $"{FirstName} {LastName}";
+        }
     }
 }

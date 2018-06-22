@@ -7,18 +7,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DTID.BusinessLogic.Models;
 using DTID.Data;
+using DTID.Logger;
+using Microsoft.AspNetCore.Cors;
 
 namespace DTID.Controllers
 {
     [Produces("application/json")]
     [Route("api/Users")]
+
     public class UsersController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly LogHelper _logger;
 
         public UsersController(ApplicationDbContext context)
         {
             _context = context;
+            _logger = new LogHelper(context);
         }
 
         // GET: api/Users
@@ -81,6 +86,8 @@ namespace DTID.Controllers
 
             var updatedUser = _context.Users.FirstOrDefault(r => r.ID == id);
 
+            _logger.Log(Logger.Action.Update, updatedUser);
+
             return Ok(updatedUser);
         }
 
@@ -96,6 +103,8 @@ namespace DTID.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
             var user1 = _context.Users.Include(u => u.Role).SingleOrDefault(u => u.ID == user.ID);
+
+            _logger.Log(Logger.Action.Create, user1);
 
             return CreatedAtAction("GetUser", new { id = user.ID }, user1);
         }
@@ -117,6 +126,8 @@ namespace DTID.Controllers
 
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
+
+            _logger.Log(Logger.Action.Delete, user);
 
             return Ok(user);
         }

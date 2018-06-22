@@ -33,6 +33,8 @@ namespace DTID.Data
         public new DbSet<Role> Roles { get; set; }
         public new DbSet<User> Users { get; set; }
         public DbSet<PurchasingManagerIndex> PurchasingManagerIndexs { get; set; }
+        public DbSet<Log> Logs { get; set; }
+        public DbSet<SourceFile> SourceFiles { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
