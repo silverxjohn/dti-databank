@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DTID.BusinessLogic.Models;
 using DTID.Data;
+using DTID.BusinessLogic.ViewModels.GrossInternationalReserveViewModels;
 
 namespace DTID.Controllers
 {
@@ -23,9 +24,41 @@ namespace DTID.Controllers
 
         // GET: api/GrossInternationalReserves
         [HttpGet]
-        public IEnumerable<GrossInternationalReserve> GetGrossInternationalReserves()
+        public IEnumerable<YearViewModel> GetGrossInternationalReserves()
         {
-            return _context.GrossInternationalReserves.Include(gir => gir.Year);
+            var girs = _context.GrossInternationalReserves.Include(ex => ex.Month).Include(ez => ez.Year);
+
+            var data = new Dictionary<string, object>();
+
+            var ratess = girs.GroupBy(x => x.YearID).ToList();
+
+            var rates = ratess.SelectMany(r =>
+            {
+                var vm = new List<YearViewModel>();
+                foreach (var eRates in r)
+                {
+                    vm.Add(new YearViewModel
+                    {
+                        ID = eRates.ID,
+                        YearId = eRates.Year.ID,
+                        MonthId = eRates.Month.ID,
+                        Name = eRates.Year.Name,
+                        Rate = eRates.Rate,
+                        Months = girs.Where(monthRate => monthRate.Year.ID == eRates.Year.ID).Select(monthRate => new MonthViewModel
+                        {
+                            ID = monthRate.ID,
+                            MonthId = monthRate.Month.ID,
+                            YearName = eRates.Year.Name,
+                            YearId = eRates.Year.ID,
+                            Name = monthRate.Month.Name,
+                            Rate = monthRate.Rate
+                        }).ToList()
+                    });
+                }
+                return vm;
+            }).GroupBy(y => y.YearId).Select(g => g.First());
+
+            return rates;
         }
 
         // GET: api/GrossInternationalReserves/5
