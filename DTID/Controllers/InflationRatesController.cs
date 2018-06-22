@@ -22,8 +22,8 @@ namespace DTID.Controllers
             _context = context;
         }
 
-        // GET: api/InflationRates
-        [HttpGet]
+        // GET: api/InflationRates/Monthly
+        [HttpGet("Monthly")]
         public List<YearViewModel> GetInflationRates()
         {
             var inflationRates = _context.InflationRates;
@@ -38,6 +38,8 @@ namespace DTID.Controllers
                 {
                     ID = monthRate.ID,
                     MonthId = monthRate.Month.ID,
+                    YearId = monthRate.Year.ID,
+                    YearName = monthRate.Year.Name,
                     Name = monthRate.Month.Name,
                     Rate = monthRate.Rate
                 }).ToList()
@@ -45,6 +47,24 @@ namespace DTID.Controllers
 
             return rates;
     
+        }
+
+        // GET: api/InflationRates/Annual
+        [HttpGet("Annual")]
+        public List<YearViewModel> GetAnnualInflationRates()
+        {
+            var inflationRates = _context.InflationRates;
+
+            var rates = inflationRates.Where(rate => rate.Month == null).Select(rate => new YearViewModel
+            {
+                ID = rate.ID,
+                YearId = rate.Year.ID,
+                Name = rate.Year.Name,
+                Rate = rate.Rate,
+            }).ToList();
+
+            return rates;
+
         }
 
         // GET: api/InflationRates/5
@@ -98,7 +118,15 @@ namespace DTID.Controllers
                 }
             }
 
-            return NoContent();
+            var rates = _context.InflationRates.Include(iR => iR.Year).Include(eR => eR.Month).Select(xc => new YearViewModel
+            {
+                ID = xc.ID,
+                YearId = xc.Year.ID,
+                Rate = xc.Rate,
+                Name = xc.Year.Name
+            }).FirstOrDefault(xz => xz.ID == inflationRate.ID);
+
+            return Ok(rates);
         }
 
         // POST: api/InflationRates
@@ -113,7 +141,15 @@ namespace DTID.Controllers
             _context.InflationRates.Add(inflationRate);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetInflationRate", new { id = inflationRate.ID }, inflationRate);
+            var createdInflationRate = _context.InflationRates.Include(eR => eR.Year).Include(e => e.Month).Select(xc => new YearViewModel
+            {
+                ID = xc.ID,
+                YearId = xc.Year.ID,
+                Rate = xc.Rate,
+                Name = xc.Year.Name
+            }).FirstOrDefault(e => e.ID == inflationRate.ID);
+
+            return Ok(createdInflationRate);
         }
 
         // DELETE: api/InflationRates/5
