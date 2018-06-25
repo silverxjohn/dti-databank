@@ -8,6 +8,8 @@ namespace DTID.BusinessLogic.ViewModels.BalanceOfPaymentViewModels
     {
         public int ID { get; set; }
         public int? MonthId { get; set; }
+        public string YearName { get; set; }
+        public int YearId { get; set; }
         public string Name { get; set; }
         public double BalanceOfPayments { get; set; }
     }

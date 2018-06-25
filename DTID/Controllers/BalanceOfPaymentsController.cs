@@ -37,6 +37,8 @@ namespace DTID.Controllers
                 Months = data.Where(monthBops => monthBops.QuarterID == null).Where(monthBops => monthBops.MonthID != null).Where(monthBops => monthBops.Year.ID == yearBops.Year.ID).Select(monthBops => new MonthViewModel
                 {
                     ID = monthBops.ID,
+                    YearName = monthBops.Year.Name,
+                    YearId = monthBops.Year.ID,
                     MonthId = monthBops.Month.ID,
                     Name = monthBops.Month.Name,
                     BalanceOfPayments = monthBops.BalanceOfPayments
@@ -44,10 +46,29 @@ namespace DTID.Controllers
                 Quarters = data.Where(quarterBops => quarterBops.MonthID == null).Where(quarterBops => quarterBops.QuarterID != null).Where(quarterBops => quarterBops.Year.ID == yearBops.Year.ID).Select(quarterBops => new QuarterViewModel
                 {
                     ID = quarterBops.ID,
+                    YearName = quarterBops.Year.Name,
+                    YearId = quarterBops.Year.ID,
                     QuarterId = quarterBops.Quarter.ID,
                     Name = quarterBops.Quarter.Name,
                     BalanceOfPayments = quarterBops.BalanceOfPayments
                 }).ToList()
+            }).GroupBy(xc => xc.YearId).Select(g => g.First()).ToList();
+
+            return balanceOfPayments;
+        }
+
+        // GET: api/BalanceOfPayments/Annual
+        [HttpGet("Annual")]
+        public List<YearViewModel> GetAnnualBalanceOfPayments()
+        {
+            var data = _context.BalanceOfPayments;
+
+            var balanceOfPayments = data.Where(yearBops => yearBops.MonthID == null).Where(yearBops => yearBops.QuarterID == null).Select(yearBops => new YearViewModel
+            {
+                ID = yearBops.ID,
+                YearId = yearBops.Year.ID,
+                Name = yearBops.Year.Name,
+                BalanceOfPayments = yearBops.BalanceOfPayments,
             }).ToList();
 
             return balanceOfPayments;
@@ -104,7 +125,15 @@ namespace DTID.Controllers
                 }
             }
 
-            return NoContent();
+            var updatedExchangeRate = _context.BalanceOfPayments.Include(eR => eR.Year).Include(e => e.Month).Select(xc => new YearViewModel
+            {
+                ID = xc.ID,
+                YearId = xc.Year.ID,
+                BalanceOfPayments = xc.BalanceOfPayments,
+                Name = xc.Year.Name
+            }).FirstOrDefault(e => e.ID == id);
+
+            return Ok(updatedExchangeRate);
         }
 
         // POST: api/BalanceOfPayments
@@ -119,7 +148,15 @@ namespace DTID.Controllers
             _context.BalanceOfPayments.Add(balanceOfPayment);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetBalanceOfPayment", new { id = balanceOfPayment.ID }, balanceOfPayment);
+            var createdBalanceOfPayment = _context.BalanceOfPayments.Include(eR => eR.Year).Include(e => e.Month).Select(xc => new YearViewModel
+            {
+                ID = xc.ID,
+                YearId = xc.Year.ID,
+                BalanceOfPayments = xc.BalanceOfPayments,
+                Name = xc.Year.Name
+            }).FirstOrDefault(e => e.ID == balanceOfPayment.ID);
+
+            return Ok(createdBalanceOfPayment);
         }
 
         // DELETE: api/BalanceOfPayments/5

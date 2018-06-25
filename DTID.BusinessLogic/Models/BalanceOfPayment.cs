@@ -7,6 +7,7 @@ namespace DTID.BusinessLogic.Models
     public class BalanceOfPayment
     {
         public int ID { get; set; }
+        public int YearId { get; set; }
         public Year Year { get; set; }
         public Month Month { get; set; }
         public int? MonthID { get; set; }
