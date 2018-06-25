@@ -103,7 +103,16 @@ namespace DTID.Controllers
                 return BadRequest();
             }
 
-            var path = Path.Combine(_hostingEnvironment.WebRootPath, "excels", file.FileName);
+            var fileSplit = file.FileName.Split(".");
+            var fileExtension = fileSplit[fileSplit.Length - 1];
+
+            var sourceFile = new SourceFile
+            {
+                OriginalName = file.FileName
+            };
+            sourceFile.Name = $"{sourceFile.Name}.{fileExtension}";
+
+            var path = Path.Combine(_hostingEnvironment.WebRootPath, "excels", sourceFile.Name);
 
             using (var stream = new FileStream(path, FileMode.Create))
             {
@@ -112,7 +121,8 @@ namespace DTID.Controllers
 
                 var indicator = new Indicator
                 {
-                    Name = file.FileName
+                    Name = file.FileName,
+                    File = sourceFile
                 };
 
                 foreach (var sheet in GetSheet(file, stream))
