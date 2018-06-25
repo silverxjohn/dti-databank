@@ -7,6 +7,8 @@ namespace DTID.BusinessLogic.ViewModels.BalanceOfPaymentViewModels
     public class QuarterViewModel
     {
         public int ID { get; set; }
+        public string YearName { get; set; }
+        public int YearId { get; set; }
         public int? QuarterId { get; set; }
         public string Name { get; set; }
         public double BalanceOfPayments { get; set; }
