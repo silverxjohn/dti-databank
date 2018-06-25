@@ -33,36 +33,66 @@ namespace DTID.Controllers
         [HttpGet("{id}")]
         public IActionResult GetIndicatorData([FromRoute] int id)
         {
-            var indicator = _context.Indicators.Include(i => i.Categories).Include("Categories.Columns").Include("Categories.Columns.Values").Where(i => i.ID == id).First();
+            var indicator = _context.Indicators
+                            .Include(i => i.Categories)
+                            .Include("Categories.Columns")
+                            .Include("Categories.Columns.Values")
+                            .Where(i => i.ID == id).First();
 
             var data = new List<object>();
             
             foreach (var category in indicator.Categories)
             {
-                var columnValues = category.Columns.SelectMany(column => column.Values).OrderBy(column => column.RowId).GroupBy(column => column.RowId).Select(group =>
-                {
-                    var categoryData = new Dictionary<string, object>
-                    {
-                        { "id", group.First().RowId }
-                    };
-
-                    foreach (var value in group)
-                    {
-                        categoryData.Add(value.Column.Name, value.Value);
-                    }
-
-                    return categoryData;
-                });
+                var columnValues = category.Columns
+                                            .SelectMany(column => column.Values)
+                                            .OrderBy(column => column.RowId)
+                                            .GroupBy(column => column.RowId)
+                                            .Select(group => GetColumnData(group));
 
                 data.Add(new Dictionary<string, object>
                 {
-                    { "sheet", new { id = category.ID, name = category.Name, description = category.Description } },
-                    { "columns", category.Columns.Select(column => new { id = column.ID, name = column.Name, type = column.Type }) },
+                    { "sheet", GetCategoryData(category)},
+                    { "columns", GetColumns(category) },
                     { "data", columnValues }
                 });
             }
 
             return Content(JsonConvert.SerializeObject(data), "application/json");
+        }
+
+        private object GetColumns(Category category)
+        {
+            return category.Columns.Select(column => new
+            {
+                id = column.ID,
+                name = column.Name,
+                type = column.Type
+            });
+        }
+
+        private object GetCategoryData(Category category)
+        {
+            return new
+            {
+                id = category.ID,
+                name = category.Name,
+                description = category.Description
+            };
+        }
+
+        private Dictionary<string ,object> GetColumnData(IGrouping<int, ColumnValues> group)
+        {
+            var categoryData = new Dictionary<string, object>
+            {
+                { "id", group.First().RowId }
+            };
+
+            foreach (var value in group)
+            {
+                categoryData.Add(value.Column.Name, value.Value);
+            }
+
+            return categoryData;
         }
 
         [HttpPost("upload")]
@@ -172,23 +202,7 @@ namespace DTID.Controllers
                 ICell cell = row.GetCell(i);
                 if (cell == null || string.IsNullOrWhiteSpace(cell.ToString())) continue;
 
-                ColumnType type = ColumnType.Label;
-
-                switch (cell.CellComment.String.String)
-                {
-                    case "numeric":
-                        type = ColumnType.Number;
-                        break;
-                    case "text":
-                        type = ColumnType.Label;
-                        break;
-                    case "year":
-                        type = ColumnType.Year;
-                        break;
-                    case "month":
-                        type = ColumnType.Month;
-                        break;
-                }
+                var type = GetColumnType(cell);
 
                 columns.Add(new Column
                 {
@@ -198,6 +212,24 @@ namespace DTID.Controllers
             }
 
             return columns;
+        }
+
+        private ColumnType GetColumnType(ICell cell)
+        {
+            switch (cell.CellComment.String.String)
+            {
+                case "numeric":
+                    return ColumnType.Number;
+                case "year":
+                    return ColumnType.Year;
+                case "quarter":
+                    return ColumnType.Quarter;
+                case "month":
+                    return ColumnType.Month;
+                case "text":
+                default:
+                    return ColumnType.Label;
+            }
         }
 
         private List<ISheet> GetSheet(IFormFile file, FileStream stream)
