@@ -121,8 +121,9 @@ namespace DTID.Controllers
 
                 var fileName = String.Join(".", fileSplit.Skip(0).Take(fileSplit.Length - 1));
 
-                if (fileName.Substring(0, 4) == "dti_")
-                    fileName = fileName.Substring(4, fileName.Length - 4);
+                if (fileName.Length > 4) 
+                    if (fileName.Substring(0, 4) == "dti_")
+                        fileName = fileName.Substring(4, fileName.Length - 4);
 
                 var indicator = new Indicator
                 {
