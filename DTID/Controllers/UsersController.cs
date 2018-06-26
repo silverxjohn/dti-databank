@@ -33,6 +33,14 @@ namespace DTID.Controllers
             return _context.Users.Include(user => user.Role).ToList();
         }
 
+        [HttpGet("getPermission")]
+        public IEnumerable<PermissionRole> GetPermissions()
+        {
+            return _context.PermissionRole.Include(permission => permission.Permission)
+                .Where(role => role.RoleID == 1).Where(permission => permission.Permission.Name
+                .ToString().Contains("accounts")).ToList(); //change me
+        }
+
         // GET: api/Users/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser([FromRoute] int id)

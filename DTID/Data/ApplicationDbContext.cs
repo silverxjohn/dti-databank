@@ -35,6 +35,8 @@ namespace DTID.Data
         public DbSet<PurchasingManagerIndex> PurchasingManagerIndexs { get; set; }
         public DbSet<Log> Logs { get; set; }
         public DbSet<SourceFile> SourceFiles { get; set; }
+        public DbSet<DTID.BusinessLogic.Models.Permission> Permission { get; set; }
+        public DbSet<DTID.BusinessLogic.Models.PermissionRole> PermissionRole { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
