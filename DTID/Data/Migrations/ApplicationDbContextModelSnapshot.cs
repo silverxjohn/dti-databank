@@ -89,7 +89,7 @@ namespace DTID.Data.Migrations
 
                     b.Property<int?>("QuarterID");
 
-                    b.Property<int?>("YearID");
+                    b.Property<int>("YearId");
 
                     b.HasKey("ID");
 
@@ -97,7 +97,7 @@ namespace DTID.Data.Migrations
 
                     b.HasIndex("QuarterID");
 
-                    b.HasIndex("YearID");
+                    b.HasIndex("YearId");
 
                     b.ToTable("BalanceOfPayments");
                 });
@@ -225,13 +225,13 @@ namespace DTID.Data.Migrations
 
                     b.Property<double>("Rate");
 
-                    b.Property<int?>("YearID");
+                    b.Property<int>("YearId");
 
                     b.HasKey("ID");
 
                     b.HasIndex("MonthID");
 
-                    b.HasIndex("YearID");
+                    b.HasIndex("YearId");
 
                     b.ToTable("ExchangeRates");
                 });
@@ -247,11 +247,11 @@ namespace DTID.Data.Migrations
 
                     b.Property<bool>("IsActive");
 
-                    b.Property<int?>("MonthID");
+                    b.Property<int>("MonthID");
 
                     b.Property<double>("Rate");
 
-                    b.Property<int?>("YearID");
+                    b.Property<int>("YearID");
 
                     b.HasKey("ID");
 
@@ -318,13 +318,13 @@ namespace DTID.Data.Migrations
 
                     b.Property<double>("Rate");
 
-                    b.Property<int?>("YearID");
+                    b.Property<int>("YearId");
 
                     b.HasKey("ID");
 
                     b.HasIndex("MonthID");
 
-                    b.HasIndex("YearID");
+                    b.HasIndex("YearId");
 
                     b.ToTable("InflationRates");
                 });
@@ -717,7 +717,8 @@ namespace DTID.Data.Migrations
 
                     b.HasOne("DTID.BusinessLogic.Models.Year", "Year")
                         .WithMany()
-                        .HasForeignKey("YearID");
+                        .HasForeignKey("YearId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("DTID.BusinessLogic.Models.BoardOfInvestment", b =>
@@ -764,18 +765,21 @@ namespace DTID.Data.Migrations
 
                     b.HasOne("DTID.BusinessLogic.Models.Year", "Year")
                         .WithMany()
-                        .HasForeignKey("YearID");
+                        .HasForeignKey("YearId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("DTID.BusinessLogic.Models.GrossInternationalReserve", b =>
                 {
                     b.HasOne("DTID.BusinessLogic.Models.Month", "Month")
                         .WithMany()
-                        .HasForeignKey("MonthID");
+                        .HasForeignKey("MonthID")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("DTID.BusinessLogic.Models.Year", "Year")
                         .WithMany()
-                        .HasForeignKey("YearID");
+                        .HasForeignKey("YearID")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("DTID.BusinessLogic.Models.Indicator", b =>
@@ -809,7 +813,8 @@ namespace DTID.Data.Migrations
 
                     b.HasOne("DTID.BusinessLogic.Models.Year", "Year")
                         .WithMany()
-                        .HasForeignKey("YearID");
+                        .HasForeignKey("YearId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("DTID.BusinessLogic.Models.Log", b =>

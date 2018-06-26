@@ -119,9 +119,14 @@ namespace DTID.Controllers
                 file.CopyTo(stream);
                 stream.Position = 0;
 
+                var fileName = String.Join(".", fileSplit.Skip(0).Take(fileSplit.Length - 1));
+
+                if (fileName.Substring(0, 4) == "dti_")
+                    fileName = fileName.Substring(4, fileName.Length - 4);
+
                 var indicator = new Indicator
                 {
-                    Name = file.FileName,
+                    Name = fileName,
                     File = sourceFile
                 };
 
