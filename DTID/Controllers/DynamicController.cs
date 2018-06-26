@@ -140,7 +140,7 @@ namespace DTID.Controllers
 
                     IRow headerRow = sheet.GetRow(0);
 
-                    var columns = GetHeaderColumn(headerRow);
+                    var columns = GetHeaderColumn(headerRow, sheet.GetRow(1));
                     var values = GetContents(sheet, columns, headerRow.LastCellNum);
 
                     category.Columns = columns;
@@ -208,7 +208,7 @@ namespace DTID.Controllers
             return values;
         }
 
-        private List<Column> GetHeaderColumn(IRow row)
+        private List<Column> GetHeaderColumn(IRow row, IRow typeRow)
         {
             var columns = new List<Column>();
 
@@ -217,7 +217,7 @@ namespace DTID.Controllers
                 ICell cell = row.GetCell(i);
                 if (cell == null || string.IsNullOrWhiteSpace(cell.ToString())) continue;
 
-                var type = GetColumnType(cell);
+                var type = GetColumnType(cell, typeRow.GetCell(i));
 
                 columns.Add(new Column
                 {
@@ -229,9 +229,15 @@ namespace DTID.Controllers
             return columns;
         }
 
-        private ColumnType GetColumnType(ICell cell)
+        private ColumnType GetColumnType(ICell cell, ICell typeCell)
         {
-            switch (cell.CellComment.String.String)
+            var value = "";
+            if (cell.CellComment != null && cell.CellComment.String != null && !String.IsNullOrWhiteSpace(cell.CellComment.String.String))
+                value = cell.CellComment.String.String;
+            else
+                value = typeCell.ToString();
+
+            switch (value.ToLower())
             {
                 case "numeric":
                     return ColumnType.Number;
