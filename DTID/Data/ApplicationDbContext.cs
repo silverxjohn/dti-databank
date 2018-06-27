@@ -36,10 +36,6 @@ namespace DTID.Data
         public DbSet<Log> Logs { get; set; }
         public DbSet<SourceFile> SourceFiles { get; set; }
         public DbSet<Permission> Permission { get; set; }
-<<<<<<< HEAD
-=======
-        public DbSet<Role> Role { get; set; }
->>>>>>> 5920133... working cruds for all indicators
         public DbSet<PermissionRole> PermissionRole { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
