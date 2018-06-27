@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using DTID.BusinessLogic.Models;
 using DTID.Data;
 using DTID.Logger;
-using Microsoft.AspNetCore.Cors;
+using DTID.Services;
 
 namespace DTID.Controllers
 {
@@ -107,6 +107,8 @@ namespace DTID.Controllers
             {
                 return BadRequest(ModelState);
             }
+
+            user.Password = Hash.Create(user.Password, Hash.CreateSalt());
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
