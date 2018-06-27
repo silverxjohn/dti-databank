@@ -35,6 +35,9 @@ namespace DTID.Data
         public DbSet<PurchasingManagerIndex> PurchasingManagerIndexs { get; set; }
         public DbSet<Log> Logs { get; set; }
         public DbSet<SourceFile> SourceFiles { get; set; }
+        public DbSet<Permission> Permission { get; set; }
+        public DbSet<Role> Role { get; set; }
+        public DbSet<PermissionRole> PermissionRole { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -44,7 +47,6 @@ namespace DTID.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-
             
             // Customize the ASP.NET Identity model and override the defaults if needed.
             // For example, you can rename the ASP.NET Identity table names and more.

@@ -28,7 +28,7 @@ namespace DTID.Controllers
         {
             var inflationRates = _context.InflationRates;
 
-            var rates = inflationRates.Where(rate => rate.Month == null).Select(rate => new YearViewModel
+            var rates = inflationRates.Where(rate => rate.Month != null).Select(rate => new YearViewModel
             {
                 ID = rate.ID,
                 YearId = rate.Year.ID,
@@ -42,8 +42,8 @@ namespace DTID.Controllers
                     YearName = monthRate.Year.Name,
                     Name = monthRate.Month.Name,
                     Rate = monthRate.Rate
-                }).ToList()
-            }).ToList();
+                }).GroupBy(c => c.MonthId).Select(n => n.First()).ToList()
+            }).GroupBy(x => x.YearId).Select(z => z.First()).ToList();
 
             return rates;
     
@@ -61,10 +61,9 @@ namespace DTID.Controllers
                 YearId = rate.Year.ID,
                 Name = rate.Year.Name,
                 Rate = rate.Rate,
-            }).ToList();
+            }).GroupBy(z => z.YearId).Select(y => y.First()).ToList();
 
             return rates;
-
         }
 
         // GET: api/InflationRates/5
