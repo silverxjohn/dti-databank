@@ -166,7 +166,12 @@ namespace DTID.Controllers
             var quarter = "";
             var month = "";
 
-            for (var i = sheet.FirstRowNum + 1; i <= sheet.LastRowNum; i++)
+            var startRow = sheet.FirstRowNum + 1;
+
+            if (!IsUsingComment(sheet.GetRow(0).GetCell(0)))
+                startRow += 1;
+
+            for (var i = startRow; i <= sheet.LastRowNum; i++)
             {
                 IRow row = sheet.GetRow(i);
                 if (row == null) continue;
@@ -233,7 +238,7 @@ namespace DTID.Controllers
         private ColumnType GetColumnType(ICell cell, ICell typeCell)
         {
             var value = "";
-            if (cell.CellComment != null && cell.CellComment.String != null && !String.IsNullOrWhiteSpace(cell.CellComment.String.String))
+            if (IsUsingComment(cell))
                 value = cell.CellComment.String.String;
             else
                 value = typeCell.ToString();
@@ -252,6 +257,11 @@ namespace DTID.Controllers
                 default:
                     return ColumnType.Label;
             }
+        }
+
+        private bool IsUsingComment(ICell firstRow)
+        {
+            return firstRow.CellComment != null && firstRow.CellComment.String != null && !String.IsNullOrWhiteSpace(firstRow.CellComment.String.String);
         }
 
         private List<ISheet> GetSheet(IFormFile file, FileStream stream)
