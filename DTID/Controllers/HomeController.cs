@@ -15,6 +15,7 @@ using NPOI.SS.UserModel;
 using System.Dynamic;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using DTID.Services;
 
 namespace DTID.Controllers
 {
@@ -28,6 +29,26 @@ namespace DTID.Controllers
         }
         public IActionResult Index()
         {
+            //var salt = Hash.CreateSalt();
+            //var user = new User
+            //{
+            //    FirstName = "John",
+            //    LastName = "Doe",
+            //    Email = "jdoe@email.com",
+            //    Password = Hash.Create("password", salt),
+            //    Salt = salt,
+            //    Contact = "afaw",
+            //    Role = new Role
+            //    {
+            //        Name = "Admin",
+            //        Description = "Admin"
+            //    }
+            //};
+
+            //_context.Users.Add(user);
+
+            //_context.SaveChanges();
+
             return View();
         }
 

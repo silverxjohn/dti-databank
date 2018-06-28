@@ -54,7 +54,7 @@ namespace DTID.Controllers
             var claims = new Claim[]
             {
                 new Claim(JwtRegisteredClaimNames.FamilyName, user.LastName),
-                new Claim(JwtRegisteredClaimNames.Sub, user.FirstName),
+                new Claim("given_name", user.FirstName),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
@@ -79,7 +79,7 @@ namespace DTID.Controllers
 
             var user = _context.Users.Single(u => u.Email == login.Username);
             
-            var isValid = Hash.Validate(login.Password, Hash.CreateSalt(), user.Password);
+            var isValid = Hash.Validate(login.Password, user.Salt, user.Password);
 
             if (isValid)
                 result = user;

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DTID.BusinessLogic.Models;
 using DTID.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -31,6 +32,7 @@ namespace DTID.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public IActionResult GetIndicatorData([FromRoute] int id)
         {
             var indicator = _context.Indicators
@@ -106,6 +108,8 @@ namespace DTID.Controllers
             var fileSplit = file.FileName.Split(".");
             var fileExtension = fileSplit[fileSplit.Length - 1];
 
+            Indicator indicator = null;
+
             var sourceFile = new SourceFile
             {
                 OriginalName = file.FileName
@@ -125,7 +129,7 @@ namespace DTID.Controllers
                     if (fileName.Substring(0, 4) == "dti_")
                         fileName = fileName.Substring(4, fileName.Length - 4);
 
-                var indicator = new Indicator
+                indicator = new Indicator
                 {
                     Name = fileName,
                     File = sourceFile
@@ -156,7 +160,7 @@ namespace DTID.Controllers
 
             _context.SaveChanges();
 
-            return Ok();
+            return Created($"/api/Indicators/{indicator.ID}", indicator);
         }
 
         private List<ColumnValues> GetContents(ISheet sheet, List<Column> columns, int rowLength)

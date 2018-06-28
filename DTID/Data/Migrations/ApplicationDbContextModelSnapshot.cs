@@ -365,6 +365,46 @@ namespace DTID.Data.Migrations
                     b.ToTable("Months");
                 });
 
+            modelBuilder.Entity("DTID.BusinessLogic.Models.Permission", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("DateCreated");
+
+                    b.Property<DateTime>("DateUpdated");
+
+                    b.Property<string>("Description");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Permission");
+                });
+
+            modelBuilder.Entity("DTID.BusinessLogic.Models.PermissionRole", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("DateCreated");
+
+                    b.Property<DateTime>("DateUpdated");
+
+                    b.Property<int>("PermissionID");
+
+                    b.Property<int>("RoleID");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("PermissionID");
+
+                    b.HasIndex("RoleID");
+
+                    b.ToTable("PermissionRole");
+                });
+
             modelBuilder.Entity("DTID.BusinessLogic.Models.Peza", b =>
                 {
                     b.Property<int>("ID")
@@ -551,6 +591,8 @@ namespace DTID.Data.Migrations
                     b.Property<string>("Password");
 
                     b.Property<int>("RoleID");
+
+                    b.Property<string>("Salt");
 
                     b.HasKey("ID");
 
@@ -822,6 +864,19 @@ namespace DTID.Data.Migrations
                     b.HasOne("DTID.BusinessLogic.Models.User", "Users")
                         .WithMany()
                         .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("DTID.BusinessLogic.Models.PermissionRole", b =>
+                {
+                    b.HasOne("DTID.BusinessLogic.Models.Permission", "Permission")
+                        .WithMany()
+                        .HasForeignKey("PermissionID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("DTID.BusinessLogic.Models.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleID")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
