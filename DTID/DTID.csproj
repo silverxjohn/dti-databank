@@ -26,6 +26,8 @@
     <Compile Remove="Data\Migrations\20180626052731_Initial.Designer.cs" />
     <Compile Remove="Data\Migrations\20180628011019_Initial.cs" />
     <Compile Remove="Data\Migrations\20180628011019_Initial.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180628013805_Initial.cs" />
+    <Compile Remove="Data\Migrations\20180628013805_Initial.Designer.cs" />
   </ItemGroup>
 
 
@@ -49,6 +51,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Extensions\" />
     <Folder Include="wwwroot\excels\" />
   </ItemGroup>
 

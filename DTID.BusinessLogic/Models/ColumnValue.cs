@@ -4,9 +4,10 @@ using System.Text;
 
 namespace DTID.BusinessLogic.Models
 {
-    public class ColumnValues
+    public class ColumnValue
     {
         public int ID { get; set; }
+        public int ColumnID { get; set; }
         public Column Column { get; set; }
         public string Value { get; set; }
         public int RowId { get; set; }

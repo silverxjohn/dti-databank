@@ -10,7 +10,7 @@ namespace DTID.BusinessLogic.Models
         public string Name { get; set; }
         public ColumnType Type { get; set; }
         public Category Category { get; set; }
-        public List<ColumnValues> Values { get; set; }
+        public List<ColumnValue> Values { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
     }
