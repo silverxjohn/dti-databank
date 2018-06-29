@@ -37,6 +37,8 @@ namespace DTID.Data
         public DbSet<SourceFile> SourceFiles { get; set; }
         public DbSet<Permission> Permission { get; set; }
         public DbSet<PermissionRole> PermissionRole { get; set; }
+        public DbSet<ForApproval> ForApproval { get; set; }
+        public DbSet<CannedIndicator> CannedIndicator { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
