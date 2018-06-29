@@ -64,7 +64,6 @@ namespace DTID.Controllers
             var forApprovals = _context.ForApproval.Where(indicator => indicator.CannedIndicatorID == id);
 
             foreach (var forApp in forApprovals) {
-                forApp.Comment = forApproval.Comment;
                 forApp.isApproved = forApproval.isApproved;
 
                 _context.Entry(forApp).State = EntityState.Modified;
