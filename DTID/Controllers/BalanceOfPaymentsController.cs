@@ -42,7 +42,7 @@ namespace DTID.Controllers
                     MonthId = monthBops.Month.ID,
                     Name = monthBops.Month.Name,
                     BalanceOfPayments = monthBops.BalanceOfPayments
-                }).ToList(),
+                }).GroupBy(mz => mz.MonthId).Select(z => z.First()).ToList(),
                 Quarters = data.Where(quarterBops => quarterBops.MonthID == null).Where(quarterBops => quarterBops.QuarterID != null).Where(quarterBops => quarterBops.Year.ID == yearBops.Year.ID).Select(quarterBops => new QuarterViewModel
                 {
                     ID = quarterBops.ID,
@@ -51,7 +51,7 @@ namespace DTID.Controllers
                     QuarterId = quarterBops.Quarter.ID,
                     Name = quarterBops.Quarter.Name,
                     BalanceOfPayments = quarterBops.BalanceOfPayments
-                }).ToList()
+                }).GroupBy(mz => mz.QuarterId).Select(z => z.First()).ToList()
             }).GroupBy(xc => xc.YearId).Select(g => g.First()).ToList();
 
             return balanceOfPayments;
@@ -69,7 +69,7 @@ namespace DTID.Controllers
                 YearId = yearBops.Year.ID,
                 Name = yearBops.Year.Name,
                 BalanceOfPayments = yearBops.BalanceOfPayments,
-            }).ToList();
+            }).GroupBy(e => e.YearId).Select(r => r.First()).ToList();
 
             return balanceOfPayments;
         }

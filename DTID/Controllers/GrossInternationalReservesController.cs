@@ -52,7 +52,7 @@ namespace DTID.Controllers
                             YearId = eRates.Year.ID,
                             Name = monthRate.Month.Name,
                             Rate = monthRate.Rate
-                        }).ToList()
+                        }).GroupBy(e => e.MonthId).Select(z => z.First()).ToList()
                     });
                 }
                 return vm;
