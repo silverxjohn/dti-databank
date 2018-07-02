@@ -26,7 +26,7 @@ namespace DTID.Controllers
         [HttpGet]
         public List<YearViewModel> GetBalanceOfPayments()
         {
-            var data = _context.BalanceOfPayments;
+            var data = _context.BalanceOfPayments.Where(BOP => BOP.IsApproved);
 
             var balanceOfPayments = data.Where(yearBops => yearBops.MonthID == null).Where(yearBops => yearBops.QuarterID == null).Select(yearBops => new YearViewModel
             {
@@ -61,7 +61,7 @@ namespace DTID.Controllers
         [HttpGet("Annual")]
         public List<YearViewModel> GetAnnualBalanceOfPayments()
         {
-            var data = _context.BalanceOfPayments;
+            var data = _context.BalanceOfPayments.Where(BOP => BOP.IsApproved);
 
             var balanceOfPayments = data.Where(yearBops => yearBops.MonthID == null).Where(yearBops => yearBops.QuarterID == null).Select(yearBops => new YearViewModel
             {

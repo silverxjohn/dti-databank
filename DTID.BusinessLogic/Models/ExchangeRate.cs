@@ -14,7 +14,7 @@ namespace DTID.BusinessLogic.Models
         public int? MonthID { get; set; }
         public Month Month { get; set; }
         public double Rate { get; set; }
-        public bool IsActive { get; set; }
+        public bool IsApproved { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
     }

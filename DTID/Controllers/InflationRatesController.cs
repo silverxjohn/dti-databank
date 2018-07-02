@@ -26,7 +26,7 @@ namespace DTID.Controllers
         [HttpGet("Monthly")]
         public List<YearViewModel> GetInflationRates()
         {
-            var inflationRates = _context.InflationRates;
+            var inflationRates = _context.InflationRates.Where(iRate => iRate.IsApproved);
 
             var rates = inflationRates.Where(rate => rate.Month != null).Select(rate => new YearViewModel
             {
@@ -53,7 +53,7 @@ namespace DTID.Controllers
         [HttpGet("Annual")]
         public List<YearViewModel> GetAnnualInflationRates()
         {
-            var inflationRates = _context.InflationRates;
+            var inflationRates = _context.InflationRates.Where(iRate => iRate.IsApproved);
 
             var rates = inflationRates.Where(rate => rate.Month == null).Select(rate => new YearViewModel
             {

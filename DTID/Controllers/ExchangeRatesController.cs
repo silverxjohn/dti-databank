@@ -26,7 +26,7 @@ namespace DTID.Controllers
         [HttpGet("Monthly")]
         public IEnumerable<YearViewModel> GetExchangeRates()
         {
-            var exchangeRates = _context.ExchangeRates.Include(ex => ex.Month).Include(ez => ez.Year);
+            var exchangeRates = _context.ExchangeRates.Where(eRate => eRate.IsApproved).Include(ex => ex.Month).Include(ez => ez.Year);
 
             var data = new Dictionary<string, object>();
 
@@ -64,7 +64,7 @@ namespace DTID.Controllers
         [HttpGet("Annual")]
         public IEnumerable<YearViewModel> GetExchangeRatesMonth()
         {
-            var exchangeRates = _context.ExchangeRates;
+            var exchangeRates = _context.ExchangeRates.Where(eRate => eRate.IsApproved);
 
             var rates = exchangeRates.Where(er => er.MonthID == null).Select(eRates => new YearViewModel
             {

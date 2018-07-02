@@ -25,7 +25,7 @@ namespace DTID.Controllers
         [HttpGet]
         public IEnumerable<Wage> GetWages()
         {
-            return _context.Wages.Include(wage => wage.Year).GroupBy(z => z.YearID).Select(r => r.First());
+            return _context.Wages.Where(wage => wage.IsApproved).Include(wage => wage.Year).GroupBy(wage => wage.YearID).Select(wage => wage.First());
         }
 
         // GET: api/Wages/5
