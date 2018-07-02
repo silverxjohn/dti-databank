@@ -70,6 +70,9 @@ namespace DTID.Controllers
                 _context.Entry(forApp).State = EntityState.Modified;
             }
 
+            if (forApproval.isApproved == 1)
+                UpdateIndicators(id);
+
             try
             {
                 await _context.SaveChangesAsync();
@@ -140,6 +143,70 @@ namespace DTID.Controllers
         private bool ForApprovalExists(int id)
         {
             return _context.ForApproval.Any(e => e.ID == id);
+        }
+
+        private void UpdateIndicators(int id)
+        {
+            switch (id)
+            {
+                case (int)CannedIndicatorID.Wage:
+                    var wages = _context.Wages.Where(wage => !wage.IsApproved);
+
+                    foreach (var wage in wages)
+                    {
+                        wage.IsApproved = true;
+                        _context.Entry(wage).State = EntityState.Modified;
+                    }
+                    break;
+                case (int)CannedIndicatorID.Populations:
+                    var populations = _context.Populations.Where(population => !population.IsApproved);
+
+                    foreach (var population in populations)
+                    {
+                        population.IsApproved = true;
+                        _context.Entry(population).State = EntityState.Modified;
+                    }
+                    break;
+                case (int)CannedIndicatorID.InflationRate:
+                    var inflationRates = _context.InflationRates.Where(iRate => !iRate.IsApproved);
+
+                    foreach (var inflationRate in inflationRates)
+                    {
+                        inflationRate.IsApproved = true;
+                        _context.Entry(inflationRate).State = EntityState.Modified;
+                    }
+                    break;
+                case (int)CannedIndicatorID.GrossInternationalReserves:
+                    var grossInternationalReserves = _context.GrossInternationalReserves.Where(GIR => !GIR.IsApproved);
+
+                    foreach (var grossInternationalReserve in grossInternationalReserves)
+                    {
+                        grossInternationalReserve.IsApproved = true;
+                        _context.Entry(grossInternationalReserve).State = EntityState.Modified;
+                    }
+                    break;
+                case (int)CannedIndicatorID.ExchangeRate:
+                    var exchangeRates = _context.ExchangeRates.Where(eRate => !eRate.IsApproved);
+
+                    foreach (var exchangeRate in exchangeRates)
+                    {
+                        exchangeRate.IsApproved = true;
+                        _context.Entry(exchangeRate).State = EntityState.Modified;
+                    }
+                    break;
+                case (int)CannedIndicatorID.BalanceOfPayment:
+                    var balanceOfPayments = _context.BalanceOfPayments.Where(BOP => !BOP.IsApproved);
+
+                    foreach (var balanceOfPayment in balanceOfPayments)
+                    {
+                        balanceOfPayment.IsApproved = true;
+                        _context.Entry(balanceOfPayment).State = EntityState.Modified;
+                    }
+                    break;
+
+                default:
+                    return;
+            }
         }
     }
 }
