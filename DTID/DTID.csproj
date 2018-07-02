@@ -28,6 +28,12 @@
     <Compile Remove="Data\Migrations\20180628011019_Initial.Designer.cs" />
     <Compile Remove="Data\Migrations\20180628013805_Initial.cs" />
     <Compile Remove="Data\Migrations\20180628013805_Initial.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180628083651_Initial.cs" />
+    <Compile Remove="Data\Migrations\20180628083651_Initial.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180629043549_Initial.cs" />
+    <Compile Remove="Data\Migrations\20180629043549_Initial.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180629045128_Initial.cs" />
+    <Compile Remove="Data\Migrations\20180629045128_Initial.Designer.cs" />
   </ItemGroup>
 
 

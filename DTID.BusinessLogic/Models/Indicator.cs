@@ -14,6 +14,7 @@ namespace DTID.BusinessLogic.Models
         public Directory Parent { get; set; }
         public List<Category> Categories { get; set; }
         public bool IsActive { get; set; }
+        public bool IsApproved { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
     }

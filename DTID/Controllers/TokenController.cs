@@ -54,9 +54,11 @@ namespace DTID.Controllers
             var claims = new Claim[]
             {
                 new Claim(JwtRegisteredClaimNames.FamilyName, user.LastName),
-                new Claim("given_name", user.FirstName),
+                new Claim(JwtRegisteredClaimNames.GivenName, user.FirstName),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim("id", user.ID.ToString()),
+                new Claim("role_id", user.RoleID.ToString())
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));

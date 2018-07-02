@@ -33,7 +33,6 @@ namespace DTID.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize]
         public IActionResult GetIndicatorData([FromRoute] int id)
         {
             var indicator = _context.Indicators
@@ -92,7 +91,13 @@ namespace DTID.Controllers
 
             foreach (var value in group)
             {
-                categoryData.Add(value.Column.Name, value.Value);
+                try
+                {
+                    categoryData.Add(value.Column.Name, value.Value);
+                } catch(ArgumentException e)
+                {
+
+                }
             }
 
             return categoryData;
@@ -298,16 +303,15 @@ namespace DTID.Controllers
             return sheets;
         }
 
-        [HttpDelete("{id}/Row/{rowId}")]
-        [Authorize]
-        public async Task<IActionResult> DeleteData([FromRoute] int id, [FromRoute] int rowId)
+        [HttpDelete("{id}/Category/{categoryId}/Row/{rowId}")]
+        public async Task<IActionResult> DeleteData([FromRoute] int id, [FromRoute] int categoryId, [FromRoute] int rowId)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var values = _context.ColumnValues.Where(value => value.Column.Category.Indicator.ID == id).Where(value => value.RowId == rowId).ToList();
+            var values = _context.ColumnValues.Where(value => value.Column.Category.Indicator.ID == id).Where(value => value.Column.Category.ID == categoryId).Where(value => value.RowId == rowId).ToList();
 
             _context.ColumnValues.RemoveRange(values);
 
@@ -316,19 +320,40 @@ namespace DTID.Controllers
             return Ok();
         }
 
-        [HttpPost("{id}")]
-        public async Task<IActionResult> CreateData([FromRoute] int id, List<DynamicDataViewModel> values)
+        [HttpPut("{id}/Category/{categoryId}/Row/{rowId}")]
+        public async Task<IActionResult> PutData([FromRoute] int id, [FromRoute] int categoryId, [FromRoute] int rowId, [FromBody] List<DynamicDataViewModel> rows)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var rowId = _context.ColumnValues.Where(value => value.Column.Category.Indicator.ID == id).OrderByDescending(value => value.RowId).First().RowId + 1;
+            var values = _context.ColumnValues.Where(value => value.Column.Category.Indicator.ID == id).Where(value => value.Column.Category.ID == categoryId).Where(value => value.RowId == rowId).ToList();
 
-            var data = values.Select(value => new ColumnValue
+            foreach (var row in rows)
             {
-                ColumnID = value.ID,
+                var columnValue = values.Single(value => value.ColumnID == row.RowId);
+                columnValue.Value = row.Value;
+
+                _context.Entry(columnValue).State = EntityState.Modified;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        [HttpPost("{id}/Row/{rowId}")]
+        public async Task<IActionResult> CreateData([FromRoute] int id, [FromRoute] int rowId, [FromBody] List<DynamicDataViewModel> rows)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var data = rows.Select(value => new ColumnValue
+            {
+                ColumnID = value.RowId,
                 Value = value.Value,
                 RowId = rowId
             });
@@ -337,16 +362,7 @@ namespace DTID.Controllers
 
             await _context.SaveChangesAsync();
 
-            var dataRow = new Dictionary<string, object> {
-                { "ID", rowId },
-            };
-
-            foreach(var value in data)
-            {
-                dataRow.Add(value.Column.Name, value.Value);
-            }
-
-            return CreatedAtAction("", new { id = rowId }, dataRow);
+            return Ok();
         }
     }
 }

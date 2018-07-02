@@ -124,6 +124,28 @@ namespace DTID.Data.Migrations
                     b.ToTable("BoardOfInvestments");
                 });
 
+            modelBuilder.Entity("DTID.BusinessLogic.Models.CannedIndicator", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("DateCreated");
+
+                    b.Property<DateTime>("DateUpdated");
+
+                    b.Property<bool>("IsActive");
+
+                    b.Property<string>("Name");
+
+                    b.Property<string>("Path");
+
+                    b.Property<bool>("Status");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("CannedIndicator");
+                });
+
             modelBuilder.Entity("DTID.BusinessLogic.Models.Category", b =>
                 {
                     b.Property<int>("ID")
@@ -168,12 +190,12 @@ namespace DTID.Data.Migrations
                     b.ToTable("Columns");
                 });
 
-            modelBuilder.Entity("DTID.BusinessLogic.Models.ColumnValues", b =>
+            modelBuilder.Entity("DTID.BusinessLogic.Models.ColumnValue", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("ColumnID");
+                    b.Property<int>("ColumnID");
 
                     b.Property<DateTime>("DateCreated");
 
@@ -236,6 +258,36 @@ namespace DTID.Data.Migrations
                     b.ToTable("ExchangeRates");
                 });
 
+            modelBuilder.Entity("DTID.BusinessLogic.Models.ForApproval", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Activity");
+
+                    b.Property<int?>("CannedIndicatorID");
+
+                    b.Property<string>("Comment");
+
+                    b.Property<DateTime>("DateCreated");
+
+                    b.Property<DateTime>("DateUpdated");
+
+                    b.Property<int?>("IndicatorID");
+
+                    b.Property<int>("UserID");
+
+                    b.Property<int>("isApproved");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("CannedIndicatorID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("ForApproval");
+                });
+
             modelBuilder.Entity("DTID.BusinessLogic.Models.GrossInternationalReserve", b =>
                 {
                     b.Property<int>("ID")
@@ -273,6 +325,8 @@ namespace DTID.Data.Migrations
                     b.Property<string>("Description");
 
                     b.Property<bool>("IsActive");
+
+                    b.Property<bool>("IsApproved");
 
                     b.Property<string>("Name");
 
@@ -785,11 +839,12 @@ namespace DTID.Data.Migrations
                         .HasForeignKey("CategoryID");
                 });
 
-            modelBuilder.Entity("DTID.BusinessLogic.Models.ColumnValues", b =>
+            modelBuilder.Entity("DTID.BusinessLogic.Models.ColumnValue", b =>
                 {
                     b.HasOne("DTID.BusinessLogic.Models.Column", "Column")
                         .WithMany("Values")
-                        .HasForeignKey("ColumnID");
+                        .HasForeignKey("ColumnID")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("DTID.BusinessLogic.Models.Directory", b =>
@@ -808,6 +863,18 @@ namespace DTID.Data.Migrations
                     b.HasOne("DTID.BusinessLogic.Models.Year", "Year")
                         .WithMany()
                         .HasForeignKey("YearId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("DTID.BusinessLogic.Models.ForApproval", b =>
+                {
+                    b.HasOne("DTID.BusinessLogic.Models.CannedIndicator", "CannedIndicator")
+                        .WithMany()
+                        .HasForeignKey("CannedIndicatorID");
+
+                    b.HasOne("DTID.BusinessLogic.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

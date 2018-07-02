@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DTID.BusinessLogic.Models;
 using DTID.Data;
+using System.Security.Claims;
 
 namespace DTID.Controllers
 {
@@ -64,6 +65,7 @@ namespace DTID.Controllers
             var forApprovals = _context.ForApproval.Where(indicator => indicator.CannedIndicatorID == id);
 
             foreach (var forApp in forApprovals) {
+                forApp.UserID = Int32.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == "id").Value);
                 forApp.isApproved = forApproval.isApproved;
 
                 _context.Entry(forApp).State = EntityState.Modified;
@@ -99,18 +101,38 @@ namespace DTID.Controllers
                 return BadRequest(ModelState);
             }
 
-            _context.ForApproval.Add(forApproval);
-            await _context.SaveChangesAsync();
+            //forApproval.UserID = Int32.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == "id").Value);
 
-            int indicatorID = forApproval.CannedIndicatorID;
+            if (forApproval.CannedIndicatorID > 0)
+            {
+                int indicatorID = (int)forApproval.CannedIndicatorID;
 
-            var CannedIndicator = new CannedIndicator() {
+                var CannedIndicator = new CannedIndicator()
+                {
                     ID = indicatorID,
                     Status = false
-            };
+                };
 
-            _context.Entry(CannedIndicator).Property(status => status.Status).IsModified = true;
-            _context.SaveChanges();
+                _context.Entry(CannedIndicator).Property(status => status.Status).IsModified = true;
+            } else if (forApproval.IndicatorID != null)
+            {
+                forApproval.CannedIndicatorID = null;
+
+                var indicator = _context.Indicators.Find(forApproval.IndicatorID);
+                indicator.IsApproved = false;
+
+                _context.Entry(indicator).State = EntityState.Modified;
+            }
+
+            _context.ForApproval.Add(forApproval);
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            } catch (Exception e)
+            {
+
+            }
 
             return CreatedAtAction("GetForApproval", new { id = forApproval.ID }, forApproval);
         }

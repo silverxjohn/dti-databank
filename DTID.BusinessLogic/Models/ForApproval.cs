@@ -13,8 +13,9 @@ namespace DTID.BusinessLogic.Models
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
         public string Comment { get; set; }
-        public int isApproved { get; set; }
-        public int CannedIndicatorID { get; set; }
+        public ApprovalStatus isApproved { get; set; }
+        public int? IndicatorID { get; set; }
+        public int? CannedIndicatorID { get; set; }
         public CannedIndicator CannedIndicator { get; set; }
     }
 }

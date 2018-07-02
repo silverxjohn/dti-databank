@@ -6,7 +6,7 @@ namespace DTID.BusinessLogic.ViewModels.DynamicViewModels
 {
     public class DynamicDataViewModel
     {
-        public int ID { get; set; }
+        public int RowId { get; set; }
         public string Value { get; set; }
     }
 }
