@@ -166,8 +166,10 @@ namespace DTID.Controllers
 
             _context.SaveChanges();
 
-            return Ok();
-            //return Created($"/api/Indicators/{indicator.ID}", indicator);
+            indicator.File = null;
+            indicator.Categories = null;
+
+            return Ok(indicator);
         }
 
         private List<ColumnValue> GetContents(ISheet sheet, List<Column> columns, int rowLength)
