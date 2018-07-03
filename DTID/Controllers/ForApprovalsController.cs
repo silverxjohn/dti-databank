@@ -57,12 +57,12 @@ namespace DTID.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (id != forApproval.CannedIndicatorID)
+            if (id != forApproval.ID)
             {
                 return BadRequest();
             }
 
-            var forApprovals = _context.ForApproval.Where(indicator => indicator.CannedIndicatorID == id);
+            var forApprovals = _context.ForApproval.Where(indicator => indicator.ID == id);
 
             foreach (var forApp in forApprovals) {
                 forApp.UserID = forApproval.UserID; //Int32.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == "id").Value);
@@ -74,7 +74,18 @@ namespace DTID.Controllers
             }
             
             if (forApproval.isApproved == ApprovalStatus.Approved)
-                UpdateIndicators(id);
+            {
+                if (forApproval.CannedIndicatorID != null)
+                {
+                    UpdateIndicators((int)forApproval.CannedIndicatorID);
+                } else if (forApproval.IndicatorID != null)
+                {
+                    var indicator = _context.Indicators.Find(forApproval.IndicatorID);
+                    indicator.IsApproved = forApproval.isApproved == ApprovalStatus.Approved;
+
+                    _context.Entry(indicator).State = EntityState.Modified;
+                }
+            }
 
             try
             {
