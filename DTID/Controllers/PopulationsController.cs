@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DTID.BusinessLogic.Models;
 using DTID.Data;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using NPOI.XSSF.UserModel;
+using NPOI.SS.UserModel;
 
 namespace DTID.Controllers
 {
@@ -15,10 +19,12 @@ namespace DTID.Controllers
     public class PopulationsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IHostingEnvironment _hostingEnvironment;
 
-        public PopulationsController(ApplicationDbContext context)
+        public PopulationsController(ApplicationDbContext context, IHostingEnvironment hostingEnvironment)
         {
             _context = context;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         // GET: api/Populations
@@ -108,6 +114,45 @@ namespace DTID.Controllers
         private bool PopulationExists(int id)
         {
             return _context.Populations.Any(e => e.ID == id);
+        }
+
+        [HttpGet("Download")] //api/Populations/Download
+        public async Task<IActionResult> OnPostExport()
+        {
+            string sWebRootFolder = _hostingEnvironment.WebRootPath;
+            string sFileName = @"excels/demo.xlsx";
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("popn");
+                IRow row = excelSheet.CreateRow(0);
+
+                var populations = _context.Populations.Include(popn => popn.Year).GroupBy(popn => popn.YearID).Select(popn => popn.First());
+
+                row.CreateCell(1).SetCellValue("PH POPN");
+
+                var i = 1;
+
+                foreach (var population in populations)
+                {
+                    row = excelSheet.CreateRow(i);
+                    row.CreateCell(0).SetCellValue(Int32.Parse(population.Year.Name));
+                    row.CreateCell(1).SetCellValue(population.Populations);
+
+                    i++;
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            var newFileName = "POPN_" + DateTime.Now.ToString("MM-dd-yyyy_hh:mm_tt") + ".xlsx";
+            return File(memory, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", newFileName);
         }
     }
 }
