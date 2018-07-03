@@ -65,12 +65,14 @@ namespace DTID.Controllers
             var forApprovals = _context.ForApproval.Where(indicator => indicator.CannedIndicatorID == id);
 
             foreach (var forApp in forApprovals) {
-                forApp.UserID = Int32.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == "id").Value);
+                forApp.UserID = forApproval.UserID; //Int32.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == "id").Value);
                 forApp.isApproved = forApproval.isApproved;
+                forApp.Comment = forApproval.Comment;
+                forApp.DateCreated = DateTime.Now;
 
                 _context.Entry(forApp).State = EntityState.Modified;
             }
-
+            
             if (forApproval.isApproved == ApprovalStatus.Approved)
                 UpdateIndicators(id);
 
