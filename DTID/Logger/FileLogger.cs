@@ -8,7 +8,7 @@ namespace DTID.Logger
 {
     public class FileLogger : ILogger
     {
-        private const string PATH = "storage/logs/dti.log";
+        private const string PATH = "wwwroot/logs/dti.log";
 
         public FileLogger()
         {

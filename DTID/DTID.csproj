@@ -65,6 +65,7 @@
   <ItemGroup>
     <Folder Include="Extensions\" />
     <Folder Include="wwwroot\excels\" />
+    <Folder Include="wwwroot\logs\" />
   </ItemGroup>
 
 </Project>

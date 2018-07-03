@@ -9,6 +9,7 @@ using DTID.BusinessLogic.Models;
 using DTID.Data;
 using DTID.Logger;
 using DTID.Services;
+using DTID.BusinessLogic.ViewModels.UserViewModels;
 
 namespace DTID.Controllers
 {
@@ -60,6 +61,24 @@ namespace DTID.Controllers
             return Ok(user);
         }
 
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> PatchUser([FromRoute] int id, [FromBody] ChangePasswordViewModel vm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = _context.Users.Find(id);
+            user.Password = Hash.Create(vm.Password, user.Salt);
+
+            _context.Entry(user).State = EntityState.Modified;
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
         // PUT: api/Users/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser([FromRoute] int id, [FromBody] User user)
@@ -92,7 +111,7 @@ namespace DTID.Controllers
                 }
             }
 
-            var updatedUser = _context.Users.FirstOrDefault(r => r.ID == id);
+            var updatedUser = _context.Users.Include(u => u.Role).FirstOrDefault(r => r.ID == id);
 
             _logger.Log(Logger.Action.Update, updatedUser);
 
