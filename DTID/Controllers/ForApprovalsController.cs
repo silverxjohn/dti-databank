@@ -87,6 +87,9 @@ namespace DTID.Controllers
                 }
             }
 
+            if (forApproval.isApproved == 1)
+                UpdateIndicators(id);
+
             try
             {
                 await _context.SaveChangesAsync();
