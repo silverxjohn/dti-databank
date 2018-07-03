@@ -8,6 +8,10 @@ using Microsoft.EntityFrameworkCore;
 using DTID.BusinessLogic.Models;
 using DTID.Data;
 using DTID.BusinessLogic.ViewModels.GrossInternationalReserveViewModels;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 
 namespace DTID.Controllers
 {
@@ -16,47 +20,36 @@ namespace DTID.Controllers
     public class GrossInternationalReservesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IHostingEnvironment _hostingEnvironment;
 
-        public GrossInternationalReservesController(ApplicationDbContext context)
+        public GrossInternationalReservesController(ApplicationDbContext context, IHostingEnvironment hostingEnvironment)
         {
             _context = context;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         // GET: api/GrossInternationalReserves
         [HttpGet]
         public IEnumerable<YearViewModel> GetGrossInternationalReserves()
         {
-            var girs = _context.GrossInternationalReserves.Include(ex => ex.Month).Include(ez => ez.Year);
+            var girs = _context.GrossInternationalReserves;
 
-            var data = new Dictionary<string, object>();
-
-            var ratess = girs.GroupBy(x => x.YearID).ToList();
-
-            var rates = ratess.SelectMany(r =>
+            var rates = girs.Where(gir => gir.Month != null).Select(gir => new YearViewModel
             {
-                var vm = new List<YearViewModel>();
-                foreach (var eRates in r)
+                ID = gir.ID,
+                YearId = gir.YearID,
+                Name = gir.Year.Name,
+                Rate = gir.Rate,
+                Months = girs.Where(mGir => mGir.Month != null).Where(mGir => mGir.Year.ID == gir.Year.ID).Select(mGir => new MonthViewModel
                 {
-                    vm.Add(new YearViewModel
-                    {
-                        ID = eRates.ID,
-                        YearId = eRates.Year.ID,
-                        MonthId = eRates.Month.ID,
-                        Name = eRates.Year.Name,
-                        Rate = eRates.Rate,
-                        Months = girs.Where(monthRate => monthRate.Year.ID == eRates.Year.ID).Select(monthRate => new MonthViewModel
-                        {
-                            ID = monthRate.ID,
-                            MonthId = monthRate.Month.ID,
-                            YearName = eRates.Year.Name,
-                            YearId = eRates.Year.ID,
-                            Name = monthRate.Month.Name,
-                            Rate = monthRate.Rate
-                        }).GroupBy(e => e.MonthId).Select(z => z.First()).ToList()
-                    });
-                }
-                return vm;
-            }).GroupBy(y => y.YearId).Select(g => g.First());
+                    ID = mGir.ID,
+                    MonthId = mGir.Month.ID,
+                    YearId = mGir.Year.ID,
+                    YearName = mGir.Year.Name,
+                    Name = mGir.Month.Name,
+                    Rate = mGir.Rate
+                }).GroupBy(c => c.MonthId).Select(n => n.First()).ToList().ToList()
+            }).GroupBy(c => c.YearId).Select(n => n.First()).ToList();
 
             return rates;
         }
@@ -154,6 +147,69 @@ namespace DTID.Controllers
         private bool GrossInternationalReserveExists(int id)
         {
             return _context.GrossInternationalReserves.Any(e => e.ID == id);
+        }
+
+        [HttpGet("Download")] //api/GrossInternationalReserves/Download
+        public async Task<IActionResult> OnPostExport()
+        {
+            string sWebRootFolder = _hostingEnvironment.WebRootPath;
+            string sFileName = @"excels/demo.xlsx";
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Monthly");
+                IRow rowFields = excelSheet.CreateRow(0);
+
+                var girs = _context.GrossInternationalReserves;
+
+                var monthlyGrossInternationalReserves = girs.Where(gir => gir.Month != null).Select(gir => new YearViewModel
+                {
+                    ID = gir.ID,
+                    YearId = gir.YearID,
+                    Name = gir.Year.Name,
+                    Rate = gir.Rate,
+                    Months = girs.Where(mGir => mGir.Month != null).Where(mGir => mGir.Year.ID == gir.Year.ID).Select(mGir => new MonthViewModel
+                    {
+                        ID = mGir.ID,
+                        MonthId = mGir.Month.ID,
+                        YearId = mGir.Year.ID,
+                        YearName = mGir.Year.Name,
+                        Name = mGir.Month.Name,
+                        Rate = mGir.Rate
+                    }).GroupBy(c => c.MonthId).Select(n => n.First()).ToList().ToList()
+                }).GroupBy(c => c.YearId).Select(n => n.First()).ToList();
+
+                rowFields.CreateCell(0).SetCellValue("Year");
+                rowFields.CreateCell(1).SetCellValue("Month");
+                rowFields.CreateCell(2).SetCellValue("GIR");
+
+                var i = 1;
+
+                foreach (var monthlyGrossInternationalReserve in monthlyGrossInternationalReserves)
+                {
+                    foreach(var month in monthlyGrossInternationalReserve.Months)
+                    {
+                        IRow row = excelSheet.CreateRow(i);
+
+                        row.CreateCell(0).SetCellValue(Int32.Parse(month.YearName));
+                        row.CreateCell(1).SetCellValue(month.Name);
+                        row.CreateCell(2).SetCellValue(month.Rate);
+
+                        i++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            var newFileName = "GIR_" + DateTime.Now.ToString("MM-dd-yyyy_hh:mm_tt") + ".xlsx";
+            return File(memory, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", newFileName);
         }
     }
 }
