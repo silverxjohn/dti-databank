@@ -26,7 +26,7 @@ namespace DTID.Controllers
         [HttpGet]
         public IEnumerable<YearViewModel> GetGrossInternationalReserves()
         {
-            var girs = _context.GrossInternationalReserves.Where(gir => gir.IsApproved).Include(ex => ex.Month).Include(ez => ez.Year);
+            var girs = _context.GrossInternationalReserves.Include(ex => ex.Month).Include(ez => ez.Year);
 
             var data = new Dictionary<string, object>();
 

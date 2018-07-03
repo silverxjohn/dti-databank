@@ -25,7 +25,7 @@ namespace DTID.Controllers
         [HttpGet]
         public IEnumerable<Population> GetPopulations()
         {
-            return _context.Populations.Where(population => population.IsApproved).Include(population => population.Year).GroupBy(population => population.YearID).Select(population => population.First());
+            return _context.Populations.Include(population => population.Year).GroupBy(population => population.YearID).Select(population => population.First());
         }
 
         // GET: api/Populations/5
