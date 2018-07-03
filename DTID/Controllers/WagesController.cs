@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DTID.BusinessLogic.Models;
 using DTID.Data;
+using System.IO;
+using NPOI.XSSF.UserModel;
+using NPOI.SS.UserModel;
+using Microsoft.AspNetCore.Hosting;
 
 namespace DTID.Controllers
 {
@@ -15,10 +19,12 @@ namespace DTID.Controllers
     public class WagesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IHostingEnvironment _hostingEnvironment;
 
-        public WagesController(ApplicationDbContext context)
+        public WagesController(ApplicationDbContext context, IHostingEnvironment hostingEnvironment)
         {
             _context = context;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         // GET: api/Wages
@@ -124,6 +130,52 @@ namespace DTID.Controllers
         private bool WageExists(int id)
         {
             return _context.Wages.Any(e => e.ID == id);
+        }
+
+        [HttpGet("Download")] //api/Wages/Download
+        public async Task<IActionResult> OnPostExport()
+        {
+            string sWebRootFolder = _hostingEnvironment.WebRootPath;
+            string sFileName = @"demo.xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Annual");
+                IRow row = excelSheet.CreateRow(0);
+                IRow rowYear = excelSheet.CreateRow(1);
+                IRow rowFields = excelSheet.CreateRow(3);
+
+                var wages = _context.Wages.Include(wage => wage.Year);
+
+                row.CreateCell(0).SetCellValue("Statistics on Philippine Wage");
+                rowYear.CreateCell(0).SetCellValue(wages.First().Year.Name + "-" + wages.Last().Year.Name);
+                rowFields.CreateCell(0).SetCellValue("Year");
+                rowFields.CreateCell(1).SetCellValue("Monthly Wage Average");
+
+                var i = 4;
+
+                foreach (var wage in wages)
+                {
+                    row = excelSheet.CreateRow(i);
+
+                    row.CreateCell(0).SetCellValue(Int32.Parse(wage.Year.Name));
+                    row.CreateCell(1).SetCellValue(wage.Wages);
+
+                    i++;
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            var newFileName = "WAGES_" + DateTime.Now.ToString("MM-dd-yyyy_hh:mm_tt") + ".xlsx";
+            return File(memory, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", newFileName);
         }
     }
 }
