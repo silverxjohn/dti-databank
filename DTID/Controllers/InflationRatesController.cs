@@ -53,7 +53,7 @@ namespace DTID.Controllers
         [HttpGet("Annual")]
         public List<YearViewModel> GetAnnualInflationRates()
         {
-            var inflationRates = _context.InflationRates.Where(iRate => iRate.IsApproved);
+            var inflationRates = _context.InflationRates;
 
             var rates = inflationRates.Where(rate => rate.Month == null).Select(rate => new YearViewModel
             {
