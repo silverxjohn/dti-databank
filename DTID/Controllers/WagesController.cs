@@ -136,8 +136,7 @@ namespace DTID.Controllers
         public async Task<IActionResult> OnPostExport()
         {
             string sWebRootFolder = _hostingEnvironment.WebRootPath;
-            string sFileName = @"demo.xlsx";
-            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            string sFileName = @"excels/demo.xlsx";
             FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
             var memory = new MemoryStream();
             using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
@@ -149,7 +148,7 @@ namespace DTID.Controllers
                 IRow rowYear = excelSheet.CreateRow(1);
                 IRow rowFields = excelSheet.CreateRow(3);
 
-                var wages = _context.Wages.Include(wage => wage.Year);
+                var wages = _context.Wages.Include(wage => wage.Year).GroupBy(wage => wage.YearID).Select(wage => wage.First());
 
                 row.CreateCell(0).SetCellValue("Statistics on Philippine Wage");
                 rowYear.CreateCell(0).SetCellValue(wages.First().Year.Name + "-" + wages.Last().Year.Name);
