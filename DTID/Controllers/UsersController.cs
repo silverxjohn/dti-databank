@@ -108,7 +108,8 @@ namespace DTID.Controllers
                 return BadRequest(ModelState);
             }
 
-            user.Password = Hash.Create(user.Password, Hash.CreateSalt());
+            user.Salt = Hash.CreateSalt();
+            user.Password = Hash.Create(user.Password, user.Salt);
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();

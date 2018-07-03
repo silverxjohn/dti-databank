@@ -113,16 +113,29 @@ namespace DTID.Controllers
                 return BadRequest(ModelState);
             }
 
-            var indicator = await _context.Indicators.SingleOrDefaultAsync(m => m.ID == id);
+            var indicator = await _context.Indicators
+                                    .Include(i => i.Categories)
+                                    .Include("Categories.Columns")
+                                    .Include("Categories.Columns.Values")
+                                    .SingleOrDefaultAsync(m => m.ID == id);
+
             if (indicator == null)
             {
                 return NotFound();
             }
 
             _context.Indicators.Remove(indicator);
-            await _context.SaveChangesAsync();
 
-            return Ok(indicator);
+            try
+            {
+                await _context.SaveChangesAsync();
+
+            } catch(Exception e)
+            {
+
+            }
+
+            return Ok();
         }
 
         private bool IndicatorExists(int id)

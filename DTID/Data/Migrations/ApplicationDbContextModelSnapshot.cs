@@ -83,7 +83,7 @@ namespace DTID.Data.Migrations
 
                     b.Property<DateTime>("DateUpdated");
 
-                    b.Property<bool>("IsActive");
+                    b.Property<bool>("IsApproved");
 
                     b.Property<int?>("MonthID");
 
@@ -102,26 +102,28 @@ namespace DTID.Data.Migrations
                     b.ToTable("BalanceOfPayments");
                 });
 
-            modelBuilder.Entity("DTID.BusinessLogic.Models.BoardOfInvestment", b =>
+            modelBuilder.Entity("DTID.BusinessLogic.Models.BoiPeza", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<double>("Amount");
+                    b.Property<double>("BOI");
 
                     b.Property<DateTime>("DateCreated");
 
                     b.Property<DateTime>("DateUpdated");
 
-                    b.Property<bool>("IsActive");
+                    b.Property<bool>("IsApproved");
 
-                    b.Property<int>("YearID");
+                    b.Property<double>("Peza");
+
+                    b.Property<int>("YearId");
 
                     b.HasKey("ID");
 
-                    b.HasIndex("YearID");
+                    b.HasIndex("YearId");
 
-                    b.ToTable("BoardOfInvestments");
+                    b.ToTable("BoiPezas");
                 });
 
             modelBuilder.Entity("DTID.BusinessLogic.Models.CannedIndicator", b =>
@@ -241,7 +243,7 @@ namespace DTID.Data.Migrations
 
                     b.Property<DateTime>("DateUpdated");
 
-                    b.Property<bool>("IsActive");
+                    b.Property<bool>("IsApproved");
 
                     b.Property<int?>("MonthID");
 
@@ -297,7 +299,7 @@ namespace DTID.Data.Migrations
 
                     b.Property<DateTime>("DateUpdated");
 
-                    b.Property<bool>("IsActive");
+                    b.Property<bool>("IsApproved");
 
                     b.Property<int>("MonthID");
 
@@ -366,7 +368,7 @@ namespace DTID.Data.Migrations
 
                     b.Property<DateTime>("DateUpdated");
 
-                    b.Property<bool>("IsActive");
+                    b.Property<bool>("IsApproved");
 
                     b.Property<int?>("MonthID");
 
@@ -459,28 +461,6 @@ namespace DTID.Data.Migrations
                     b.ToTable("PermissionRole");
                 });
 
-            modelBuilder.Entity("DTID.BusinessLogic.Models.Peza", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<double>("Amount");
-
-                    b.Property<DateTime>("DateCreated");
-
-                    b.Property<DateTime>("DateUpdated");
-
-                    b.Property<bool>("IsActive");
-
-                    b.Property<int>("YearID");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("YearID");
-
-                    b.ToTable("Pezas");
-                });
-
             modelBuilder.Entity("DTID.BusinessLogic.Models.Population", b =>
                 {
                     b.Property<int>("ID")
@@ -490,7 +470,7 @@ namespace DTID.Data.Migrations
 
                     b.Property<DateTime>("DateUpdated");
 
-                    b.Property<bool>("IsActive");
+                    b.Property<bool>("IsApproved");
 
                     b.Property<int>("Populations");
 
@@ -664,7 +644,7 @@ namespace DTID.Data.Migrations
 
                     b.Property<DateTime>("DateUpdated");
 
-                    b.Property<bool>("IsActive");
+                    b.Property<bool>("IsApproved");
 
                     b.Property<int>("Wages");
 
@@ -817,11 +797,11 @@ namespace DTID.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("DTID.BusinessLogic.Models.BoardOfInvestment", b =>
+            modelBuilder.Entity("DTID.BusinessLogic.Models.BoiPeza", b =>
                 {
                     b.HasOne("DTID.BusinessLogic.Models.Year", "Year")
                         .WithMany()
-                        .HasForeignKey("YearID")
+                        .HasForeignKey("YearId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
@@ -944,14 +924,6 @@ namespace DTID.Data.Migrations
                     b.HasOne("DTID.BusinessLogic.Models.Role", "Role")
                         .WithMany()
                         .HasForeignKey("RoleID")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("DTID.BusinessLogic.Models.Peza", b =>
-                {
-                    b.HasOne("DTID.BusinessLogic.Models.Year", "Year")
-                        .WithMany()
-                        .HasForeignKey("YearID")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

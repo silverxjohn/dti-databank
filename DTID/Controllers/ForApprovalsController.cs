@@ -71,7 +71,7 @@ namespace DTID.Controllers
                 _context.Entry(forApp).State = EntityState.Modified;
             }
 
-            if (forApproval.isApproved == 1)
+            if (forApproval.isApproved == ApprovalStatus.Approved)
                 UpdateIndicators(id);
 
             try
