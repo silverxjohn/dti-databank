@@ -79,12 +79,16 @@ namespace DTID.Controllers
         {
             User result = null;
 
-            var user = _context.Users.Single(u => u.Email == login.Username);
-            
-            var isValid = Hash.Validate(login.Password, user.Salt, user.Password);
+            try
+            {
+                var user = _context.Users.Single(u => u.Email == login.Username);
+                var isValid = Hash.Validate(login.Password, user.Salt, user.Password);
 
-            if (isValid)
-                result = user;
+                if (isValid)
+                    result = user;
+            } catch(Exception e) {
+                return result;
+            }
 
             return result;
         }
