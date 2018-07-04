@@ -28,39 +28,22 @@ namespace DTID.Controllers
             _hostingEnvironment = hostingEnvironment;
         }
 
-        // GET: api/BalanceOfPayments
-        [HttpGet]
-        public List<YearViewModel> GetBalanceOfPayments()
+        // GET: api/BalanceOfPayments/Quarterly
+        [HttpGet("Quarterly")]
+        public List<QuarterViewModel> GetQuarterlyBalanceOfPayments()
         {
-            var bops = _context.BalanceOfPayments;
+            var quarterBalanceOfPayments = GetQuarterData();
 
-            var balanceOfPayments = bops.Where(yearBops => yearBops.MonthID == null).Where(yearBops => yearBops.QuarterID == null).Select(yearBops => new YearViewModel
-            {
-                ID = yearBops.ID,
-                YearId = yearBops.Year.ID,
-                Name = yearBops.Year.Name,
-                BalanceOfPayments = yearBops.BalanceOfPayments,
-                Months = bops.Where(monthBops => monthBops.QuarterID == null).Where(monthBops => monthBops.MonthID != null).Where(monthBops => monthBops.YearId == yearBops.YearId).Select(monthBops => new MonthViewModel
-                {
-                    ID = monthBops.ID,
-                    YearName = monthBops.Year.Name,
-                    YearId = monthBops.Year.ID,
-                    MonthId = monthBops.Month.ID,
-                    Name = monthBops.Month.Name,
-                    BalanceOfPayments = monthBops.BalanceOfPayments
-                }).GroupBy(mz => mz.MonthId).Select(z => z.First()).ToList(),
-                Quarters = bops.Where(quarterBops => quarterBops.MonthID == null).Where(quarterBops => quarterBops.QuarterID != null).Where(quarterBops => quarterBops.YearId == yearBops.YearId).Select(quarterBops => new QuarterViewModel
-                {
-                    ID = quarterBops.ID,
-                    YearName = quarterBops.Year.Name,
-                    YearId = quarterBops.Year.ID,
-                    QuarterId = quarterBops.Quarter.ID,
-                    Name = quarterBops.Quarter.Name,
-                    BalanceOfPayments = quarterBops.BalanceOfPayments
-                }).GroupBy(mz => mz.QuarterId).Select(z => z.First()).ToList()
-            }).GroupBy(xc => xc.YearId).Select(g => g.First()).ToList();
+            return quarterBalanceOfPayments;
+        }
 
-            return balanceOfPayments;
+        // GET: api/BalanceOfPayments/Quarterly
+        [HttpGet("Monthly")]
+        public List<MonthViewModel> GetMonthlyBalanceOfPayments()
+        {
+            var monthBalanceOfPayments = GetMonthData();
+
+            return monthBalanceOfPayments;
         }
 
         // GET: api/BalanceOfPayments/Annual
