@@ -30,45 +30,20 @@ namespace DTID.Controllers
 
         // GET: api/ExchangeRates/Monthly for month data
         [HttpGet("Monthly")]
-        public IEnumerable<YearViewModel> GetExchangeRates()
+        public IEnumerable<MonthViewModel> GetExchangeRates()
         {
-            var exchangeRates = _context.ExchangeRates.Include(ex => ex.Month).Include(ez => ez.Year);
+            var monthExchangeRates = GetMonthData();
 
-            var rates = exchangeRates.Where(er => er.MonthID == null).Select(eRates => new YearViewModel
-            {
-                ID = eRates.ID,
-                YearId = eRates.Year.ID,
-                Name = eRates.Year.Name,
-                Rate = eRates.Rate,
-                Months = exchangeRates.Where(eRate => eRate.MonthID != null).Where(eRate => eRate.YearId == eRates.YearId).Select(mERate => new MonthViewModel
-                {
-                    ID = mERate.ID,
-                    MonthId = mERate.Month.ID,
-                    YearId = mERate.Year.ID,
-                    YearName = mERate.Year.Name,
-                    Name = mERate.Month.Name,
-                    Rate = mERate.Rate
-                }).GroupBy(c => c.MonthId).Select(n => n.First()).ToList()
-            }).GroupBy(c => c.YearId).Select(n => n.First()).ToList();
-
-            return rates;
+            return monthExchangeRates;
         }
 
         // GET: api/ExchangeRates/Annual for year data
         [HttpGet("Annual")]
         public IEnumerable<YearViewModel> GetExchangeRatesMonth()
         {
-            var exchangeRates = _context.ExchangeRates;
-
-            var rates = exchangeRates.Where(er => er.MonthID == null).Select(eRates => new YearViewModel
-            {
-                ID = eRates.ID,
-                YearId = eRates.Year.ID,
-                Name = eRates.Year.Name,
-                Rate = eRates.Rate,
-            }).ToList();
-
-            return rates;
+            var annualExchangeRates = GetAnnualData();
+            
+            return annualExchangeRates;
         }
 
         // GET: api/ExchangeRates/5
@@ -202,44 +177,33 @@ namespace DTID.Controllers
                 annualRowLabels.CreateCell(0).SetCellValue("Year");
                 annualRowLabels.CreateCell(1).SetCellValue("Exchange Rate");
 
-                var exchangeRates = _context.ExchangeRates;
-
-                var rates = exchangeRates.Where(er => er.MonthID == null).Select(eRates => new YearViewModel
-                {
-                    ID = eRates.ID,
-                    YearId = eRates.Year.ID,
-                    Name = eRates.Year.Name,
-                    Rate = eRates.Rate,
-                    Months = exchangeRates.Where(eRate => eRate.MonthID != null).Where(eRate => eRate.YearId == eRates.YearId).Select(mERate => new MonthViewModel
-                    {
-                        ID = mERate.ID,
-                        MonthId = mERate.Month.ID,
-                        YearId = mERate.Year.ID,
-                        YearName = mERate.Year.Name,
-                        Name = mERate.Month.Name,
-                        Rate = mERate.Rate
-                    }).GroupBy(c => c.MonthId).Select(n => n.First()).ToList()
-                }).GroupBy(c => c.YearId).Select(n => n.First()).ToList();
+                var monthExchangeRates = GetMonthData();
 
                 var i = 1;
 
-                foreach (var rate in rates)
+                foreach (var monthExchangeRate in monthExchangeRates)
                 {
                     IRow annualRow = annualSheet.CreateRow(i);
 
-                    annualRow.CreateCell(0).SetCellValue(rate.Name);
-                    annualRow.CreateCell(1).SetCellValue(rate.Rate);
-
-                    foreach (var month in rate.Months)
-                    {
-                        IRow monthRow = monthSheet.CreateRow(i);
-
-                        monthRow.CreateCell(0).SetCellValue(Int32.Parse(month.YearName));
-                        monthRow.CreateCell(1).SetCellValue(month.Name);
-                        monthRow.CreateCell(2).SetCellValue(month.Rate);
-                    }
+                    annualRow.CreateCell(0).SetCellValue(monthExchangeRate.YearName);
+                    annualRow.CreateCell(1).SetCellValue(monthExchangeRate.Name);
+                    annualRow.CreateCell(2).SetCellValue(monthExchangeRate.Rate);
 
                     i++;
+                }
+
+                var annualExchangeRates = GetAnnualData();
+
+                var x = 1;
+
+                foreach (var annualExchangeRate in annualExchangeRates)
+                {
+                    IRow monthRow = monthSheet.CreateRow(x);
+
+                    monthRow.CreateCell(0).SetCellValue(annualExchangeRate.Name);
+                    monthRow.CreateCell(1).SetCellValue(annualExchangeRate.Rate);
+
+                    x++;
                 }
 
                 workbook.Write(fs);
@@ -251,6 +215,34 @@ namespace DTID.Controllers
             memory.Position = 0;
             var newFileName = "EXCHANGE_RATE_" + DateTime.Now.ToString("MM-dd-yyyy_hh:mm_tt") + ".xlsx";
             return File(memory, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", newFileName);
+        }
+
+        private List<YearViewModel> GetAnnualData()
+        {
+            var annualExchangeRates = _context.ExchangeRates.Where(er => er.MonthID == null).Select(eRates => new YearViewModel
+            {
+                ID = eRates.ID,
+                YearId = eRates.Year.ID,
+                Name = eRates.Year.Name,
+                Rate = eRates.Rate,
+            }).ToList();
+
+            return annualExchangeRates;
+        }
+
+        private List<MonthViewModel> GetMonthData()
+        {
+            var monthlyExchangeRates = _context.ExchangeRates.Where(eRate => eRate.MonthID != null).Select(mERate => new MonthViewModel
+            {
+                ID = mERate.ID,
+                MonthId = mERate.Month.ID,
+                YearId = mERate.Year.ID,
+                YearName = mERate.Year.Name,
+                Name = mERate.Month.Name,
+                Rate = mERate.Rate
+            }).GroupBy(c => c.YearId).Select(n => n.First()).ToList();
+
+            return monthlyExchangeRates;
         }
     }
 }

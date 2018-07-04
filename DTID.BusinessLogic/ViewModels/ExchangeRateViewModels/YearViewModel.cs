@@ -10,6 +10,5 @@ namespace DTID.BusinessLogic.ViewModels.ExchangeRateViewModels
         public int YearId { get; set; }
         public string Name { get; set; }
         public double Rate { get; set; }
-        public List<MonthViewModel> Months { get; set; }
     }
 }
