@@ -125,20 +125,19 @@ namespace DTID.Controllers
             var memory = new MemoryStream();
             using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
             {
-                IWorkbook workbook;
-                workbook = new XSSFWorkbook();
+                IWorkbook workbook = new XSSFWorkbook();
                 ISheet excelSheet = workbook.CreateSheet("popn");
-                IRow row = excelSheet.CreateRow(0);
+                IRow rowLabels = excelSheet.CreateRow(0);
 
                 var populations = _context.Populations.Include(popn => popn.Year).GroupBy(popn => popn.YearID).Select(popn => popn.First());
 
-                row.CreateCell(1).SetCellValue("PH POPN");
+                rowLabels.CreateCell(1).SetCellValue("PH POPN");
 
                 var i = 1;
 
                 foreach (var population in populations)
                 {
-                    row = excelSheet.CreateRow(i);
+                    IRow row = excelSheet.CreateRow(i);
                     row.CreateCell(0).SetCellValue(Int32.Parse(population.Year.Name));
                     row.CreateCell(1).SetCellValue(population.Populations);
 
