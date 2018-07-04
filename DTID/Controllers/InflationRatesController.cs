@@ -30,46 +30,20 @@ namespace DTID.Controllers
 
         // GET: api/InflationRates/Monthly
         [HttpGet("Monthly")]
-        public List<YearViewModel> GetInflationRates()
+        public List<MonthViewModel> GetInflationRates()
         {
-            var inflationRates = _context.InflationRates;
+            var monthInflationRates = GetMonthData();
 
-            var rates = inflationRates.Where(rate => rate.MonthID == null).Select(rate => new YearViewModel
-            {
-                ID = rate.ID,
-                YearId = rate.Year.ID,
-                Name = rate.Year.Name,
-                Rate = rate.Rate,
-                Months = inflationRates.Where(monthRate => monthRate.MonthID != null).Where(monthRate => monthRate.Year.ID == rate.Year.ID).Select(monthRate => new MonthViewModel
-                {
-                    ID = monthRate.ID,
-                    MonthId = monthRate.Month.ID,
-                    YearId = monthRate.Year.ID,
-                    YearName = monthRate.Year.Name,
-                    Name = monthRate.Month.Name,
-                    Rate = monthRate.Rate
-                }).GroupBy(c => c.MonthId).Select(n => n.First()).ToList()
-            }).GroupBy(x => x.YearId).Select(z => z.First()).ToList();
-
-            return rates;
-    
+            return monthInflationRates;   
         }
 
         // GET: api/InflationRates/Annual
         [HttpGet("Annual")]
         public List<YearViewModel> GetAnnualInflationRates()
         {
-            var inflationRates = _context.InflationRates;
+            var annualInflationRates = GetAnnualData();
 
-            var rates = inflationRates.Where(rate => rate.Month == null).Select(rate => new YearViewModel
-            {
-                ID = rate.ID,
-                YearId = rate.Year.ID,
-                Name = rate.Year.Name,
-                Rate = rate.Rate,
-            }).GroupBy(z => z.YearId).Select(y => y.First()).ToList();
-
-            return rates;
+            return annualInflationRates;
         }
 
         // GET: api/InflationRates/5
@@ -200,9 +174,8 @@ namespace DTID.Controllers
                 IRow monthlyRow = monthlySheet.CreateRow(0);
                 IRow monthlyRowLabel = monthlySheet.CreateRow(2);
 
-                var inflationRates = _context.InflationRates.Include(iRate => iRate.Year).Include(iRate => iRate.Month);
 
-                var annualInflationRates = inflationRates.Where(iRate => iRate.Month == null).GroupBy(iRate => iRate.YearId).Select(iRate => iRate.First());
+                var annualInflationRates = GetAnnualData();
 
                 annualRow.CreateCell(0).SetCellValue("Statistics on Inflation Rate");
                 annualRowLabel.CreateCell(0).SetCellValue("Year");
@@ -214,7 +187,7 @@ namespace DTID.Controllers
                 {
                     annualRow = annualSheet.CreateRow(i);
 
-                    annualRow.CreateCell(0).SetCellValue(Int32.Parse(annualInflationRate.Year.Name));
+                    annualRow.CreateCell(0).SetCellValue(Int32.Parse(annualInflationRate.Name));
                     annualRow.CreateCell(1).SetCellValue(annualInflationRate.Rate);
 
                     i++;
@@ -225,37 +198,19 @@ namespace DTID.Controllers
                 monthlyRowLabel.CreateCell(1).SetCellValue("Month");
                 monthlyRowLabel.CreateCell(2).SetCellValue("Inflation Rate");
 
-                var monthlyInflationRates = inflationRates.Where(rate => rate.Month != null).Select(rate => new YearViewModel
-                {
-                    ID = rate.ID,
-                    YearId = rate.Year.ID,
-                    Name = rate.Year.Name,
-                    Rate = rate.Rate,
-                    Months = inflationRates.Where(monthRate => monthRate.Month != null).Where(monthRate => monthRate.Year.ID == rate.Year.ID).Select(monthRate => new MonthViewModel
-                    {
-                        ID = monthRate.ID,
-                        MonthId = monthRate.Month.ID,
-                        YearId = monthRate.Year.ID,
-                        YearName = monthRate.Year.Name,
-                        Name = monthRate.Month.Name,
-                        Rate = monthRate.Rate
-                    }).GroupBy(c => c.MonthId).Select(n => n.First()).ToList()
-                }).GroupBy(x => x.YearId).Select(z => z.First()).ToList();
+                var monthlyInflationRates = GetMonthData();
 
                 var b = 3;
 
                 foreach (var monthlyInflationRate in monthlyInflationRates)
                 {
-                    foreach (var month in monthlyInflationRate.Months)
-                    {
-                        monthlyRow = monthlySheet.CreateRow(b);
+                    monthlyRow = monthlySheet.CreateRow(b);
 
-                        monthlyRow.CreateCell(0).SetCellValue(Int32.Parse(month.YearName));
-                        monthlyRow.CreateCell(1).SetCellValue(month.Name);
-                        monthlyRow.CreateCell(2).SetCellValue(month.Rate);
+                    monthlyRow.CreateCell(0).SetCellValue(Int32.Parse(monthlyInflationRate.YearName));
+                    monthlyRow.CreateCell(1).SetCellValue(monthlyInflationRate.Name);
+                    monthlyRow.CreateCell(2).SetCellValue(monthlyInflationRate.Rate);
 
-                        b++;
-                    }
+                    b++;
                 }
                 workbook.Write(fs);
             }
@@ -266,6 +221,34 @@ namespace DTID.Controllers
             memory.Position = 0;
             var newFileName = "INFLATION_RATES_" + DateTime.Now.ToString("MM-dd-yyyy_hh:mm_tt") + ".xlsx";
             return File(memory, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", newFileName);
+        }
+
+        private List<YearViewModel> GetAnnualData()
+        {
+            var annualInflationRates = _context.InflationRates.Where(rate => rate.Month == null).Select(rate => new YearViewModel
+            {
+                ID = rate.ID,
+                YearId = rate.Year.ID,
+                Name = rate.Year.Name,
+                Rate = rate.Rate,
+            }).GroupBy(z => z.YearId).Select(y => y.First()).ToList();
+
+            return annualInflationRates;
+        }
+
+        private List<MonthViewModel> GetMonthData()
+        {
+            var monthlyInflationRates = _context.InflationRates.Where(rate => rate.Month != null).Select(rate => new MonthViewModel
+            {
+                ID = rate.ID,
+                MonthId = rate.Month.ID,
+                YearId = rate.Year.ID,
+                YearName = rate.Year.Name,
+                Name = rate.Month.Name,
+                Rate = rate.Rate,
+            }).GroupBy(x => x.YearId).Select(z => z.First()).ToList();
+
+            return monthlyInflationRates;
         }
     }
 }
