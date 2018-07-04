@@ -28,30 +28,13 @@ namespace DTID.Controllers
             _hostingEnvironment = hostingEnvironment;
         }
 
-        // GET: api/GrossInternationalReserves
+        // GET: api/GrossInternationalReserves // for month data only needs refactoring
         [HttpGet]
         public IEnumerable<YearViewModel> GetGrossInternationalReserves()
         {
-            var girs = _context.GrossInternationalReserves;
+            var monthlyGrossInternationalReserves = GetData();
 
-            var rates = girs.Where(gir => gir.MonthID == null).Select(gir => new YearViewModel
-            {
-                ID = gir.ID,
-                YearId = gir.YearID,
-                Name = gir.Year.Name,
-                Rate = gir.Rate,
-                Months = girs.Where(mGir => mGir.MonthID != null).Where(mGir => mGir.YearID == gir.YearID).Select(mGir => new MonthViewModel
-                {
-                    ID = mGir.ID,
-                    MonthId = mGir.Month.ID,
-                    YearId = mGir.Year.ID,
-                    YearName = mGir.Year.Name,
-                    Name = mGir.Month.Name,
-                    Rate = mGir.Rate
-                }).GroupBy(c => c.MonthId).Select(n => n.First()).ToList()
-            }).GroupBy(c => c.YearId).Select(n => n.First()).ToList();
-
-            return rates;
+            return monthlyGrossInternationalReserves;
         }
 
         // GET: api/GrossInternationalReserves/5
@@ -162,24 +145,7 @@ namespace DTID.Controllers
                 ISheet excelSheet = workbook.CreateSheet("Monthly");
                 IRow rowFields = excelSheet.CreateRow(0);
 
-                var girs = _context.GrossInternationalReserves;
-
-                var monthlyGrossInternationalReserves = girs.Where(gir => gir.Month != null).Select(gir => new YearViewModel
-                {
-                    ID = gir.ID,
-                    YearId = gir.YearID,
-                    Name = gir.Year.Name,
-                    Rate = gir.Rate,
-                    Months = girs.Where(mGir => mGir.Month != null).Where(mGir => mGir.YearID == gir.YearID).Select(mGir => new MonthViewModel
-                    {
-                        ID = mGir.ID,
-                        MonthId = mGir.Month.ID,
-                        YearId = mGir.Year.ID,
-                        YearName = mGir.Year.Name,
-                        Name = mGir.Month.Name,
-                        Rate = mGir.Rate
-                    }).GroupBy(c => c.MonthId).Select(n => n.First()).ToList().ToList()
-                }).GroupBy(c => c.YearId).Select(n => n.First()).ToList();
+                var monthlyGrossInternationalReserves = GetData();
 
                 rowFields.CreateCell(0).SetCellValue("Year");
                 rowFields.CreateCell(1).SetCellValue("Month");
@@ -209,6 +175,28 @@ namespace DTID.Controllers
             memory.Position = 0;
             var newFileName = "GIR_" + DateTime.Now.ToString("MM-dd-yyyy_hh:mm_tt") + ".xlsx";
             return File(memory, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", newFileName);
+        }
+
+        private List<YearViewModel> GetData()
+        {
+            var monthlyGrossInternationalReserves = _context.GrossInternationalReserves.Where(gir => gir.Month != null).Select(gir => new YearViewModel
+            {
+                ID = gir.ID,
+                YearId = gir.YearID,
+                Name = gir.Year.Name,
+                Rate = gir.Rate,
+                Months = _context.GrossInternationalReserves.Where(mGir => mGir.Month != null).Where(mGir => mGir.YearID == gir.YearID).Select(mGir => new MonthViewModel
+                {
+                    ID = mGir.ID,
+                    MonthId = mGir.Month.ID,
+                    YearId = mGir.Year.ID,
+                    YearName = mGir.Year.Name,
+                    Name = mGir.Month.Name,
+                    Rate = mGir.Rate
+                }).GroupBy(c => c.MonthId).Select(n => n.First()).ToList().ToList()
+            }).GroupBy(c => c.YearId).Select(n => n.First()).ToList();
+
+            return monthlyGrossInternationalReserves;
         }
     }
 }
