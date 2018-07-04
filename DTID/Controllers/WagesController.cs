@@ -141,19 +141,18 @@ namespace DTID.Controllers
             var memory = new MemoryStream();
             using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
             {
-                IWorkbook workbook;
-                workbook = new XSSFWorkbook();
+                IWorkbook workbook = new XSSFWorkbook();
                 ISheet excelSheet = workbook.CreateSheet("Annual");
                 IRow row = excelSheet.CreateRow(0);
                 IRow rowYear = excelSheet.CreateRow(1);
-                IRow rowFields = excelSheet.CreateRow(3);
+                IRow rowLabels = excelSheet.CreateRow(3);
 
                 var wages = _context.Wages.Include(wage => wage.Year).GroupBy(wage => wage.YearID).Select(wage => wage.First());
 
                 row.CreateCell(0).SetCellValue("Statistics on Philippine Wage");
                 rowYear.CreateCell(0).SetCellValue(wages.First().Year.Name + "-" + wages.Last().Year.Name);
-                rowFields.CreateCell(0).SetCellValue("Year");
-                rowFields.CreateCell(1).SetCellValue("Monthly Wage Average");
+                rowLabels.CreateCell(0).SetCellValue("Year");
+                rowLabels.CreateCell(1).SetCellValue("Monthly Wage Average");
 
                 var i = 4;
 

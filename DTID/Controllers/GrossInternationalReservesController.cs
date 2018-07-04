@@ -34,13 +34,13 @@ namespace DTID.Controllers
         {
             var girs = _context.GrossInternationalReserves;
 
-            var rates = girs.Where(gir => gir.Month != null).Select(gir => new YearViewModel
+            var rates = girs.Where(gir => gir.MonthID == null).Select(gir => new YearViewModel
             {
                 ID = gir.ID,
                 YearId = gir.YearID,
                 Name = gir.Year.Name,
                 Rate = gir.Rate,
-                Months = girs.Where(mGir => mGir.Month != null).Where(mGir => mGir.Year.ID == gir.Year.ID).Select(mGir => new MonthViewModel
+                Months = girs.Where(mGir => mGir.MonthID != null).Where(mGir => mGir.YearID == gir.YearID).Select(mGir => new MonthViewModel
                 {
                     ID = mGir.ID,
                     MonthId = mGir.Month.ID,
@@ -48,7 +48,7 @@ namespace DTID.Controllers
                     YearName = mGir.Year.Name,
                     Name = mGir.Month.Name,
                     Rate = mGir.Rate
-                }).GroupBy(c => c.MonthId).Select(n => n.First()).ToList().ToList()
+                }).GroupBy(c => c.MonthId).Select(n => n.First()).ToList()
             }).GroupBy(c => c.YearId).Select(n => n.First()).ToList();
 
             return rates;
@@ -158,8 +158,7 @@ namespace DTID.Controllers
             var memory = new MemoryStream();
             using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
             {
-                IWorkbook workbook;
-                workbook = new XSSFWorkbook();
+                IWorkbook workbook = new XSSFWorkbook();
                 ISheet excelSheet = workbook.CreateSheet("Monthly");
                 IRow rowFields = excelSheet.CreateRow(0);
 
@@ -171,7 +170,7 @@ namespace DTID.Controllers
                     YearId = gir.YearID,
                     Name = gir.Year.Name,
                     Rate = gir.Rate,
-                    Months = girs.Where(mGir => mGir.Month != null).Where(mGir => mGir.Year.ID == gir.Year.ID).Select(mGir => new MonthViewModel
+                    Months = girs.Where(mGir => mGir.Month != null).Where(mGir => mGir.YearID == gir.YearID).Select(mGir => new MonthViewModel
                     {
                         ID = mGir.ID,
                         MonthId = mGir.Month.ID,

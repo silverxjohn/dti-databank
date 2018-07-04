@@ -8,6 +8,10 @@ using Microsoft.EntityFrameworkCore;
 using DTID.BusinessLogic.Models;
 using DTID.Data;
 using DTID.BusinessLogic.ViewModels.ExchangeRateViewModels;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 
 namespace DTID.Controllers
 {
@@ -16,10 +20,12 @@ namespace DTID.Controllers
     public class ExchangeRatesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IHostingEnvironment _hostingEnvironment;
 
-        public ExchangeRatesController(ApplicationDbContext context)
+        public ExchangeRatesController(ApplicationDbContext context, IHostingEnvironment hostingEnvironment)
         {
             _context = context;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         // GET: api/ExchangeRates/Monthly for month data
@@ -28,34 +34,22 @@ namespace DTID.Controllers
         {
             var exchangeRates = _context.ExchangeRates.Include(ex => ex.Month).Include(ez => ez.Year);
 
-            var data = new Dictionary<string, object>();
-
-            var ratess = exchangeRates.Where(eRates => eRates.MonthID != null).GroupBy(x => x.YearId).ToList();
-
-            var rates = ratess.SelectMany(r => {
-                var vm = new List<YearViewModel>();
-                foreach (var eRates in r)
+            var rates = exchangeRates.Where(er => er.MonthID == null).Select(eRates => new YearViewModel
+            {
+                ID = eRates.ID,
+                YearId = eRates.Year.ID,
+                Name = eRates.Year.Name,
+                Rate = eRates.Rate,
+                Months = exchangeRates.Where(eRate => eRate.MonthID != null).Where(eRate => eRate.YearId == eRates.YearId).Select(mERate => new MonthViewModel
                 {
-                    vm.Add(new YearViewModel
-                    {
-                        ID = eRates.ID,
-                        YearId = eRates.Year.ID,
-                        MonthId = eRates.Month.ID,
-                        Name = eRates.Year.Name,
-                        Rate = eRates.Rate,
-                        Months = exchangeRates.Where(monthRate => monthRate.MonthID != null).Where(monthRate => monthRate.Year.ID == eRates.Year.ID).Select(monthRate => new MonthViewModel
-                        {
-                            ID = monthRate.ID,
-                            MonthId = monthRate.Month.ID,
-                            YearName = eRates.Year.Name,
-                            YearId = eRates.Year.ID,
-                            Name = monthRate.Month.Name,
-                            Rate = monthRate.Rate
-                        }).ToList()
-                    });
-                }
-                return vm;
-            }).GroupBy(y => y.YearId).Select(g => g.First());
+                    ID = mERate.ID,
+                    MonthId = mERate.Month.ID,
+                    YearId = mERate.Year.ID,
+                    YearName = mERate.Year.Name,
+                    Name = mERate.Month.Name,
+                    Rate = mERate.Rate
+                }).GroupBy(c => c.MonthId).Select(n => n.First()).ToList()
+            }).GroupBy(c => c.YearId).Select(n => n.First()).ToList();
 
             return rates;
         }
@@ -64,7 +58,7 @@ namespace DTID.Controllers
         [HttpGet("Annual")]
         public IEnumerable<YearViewModel> GetExchangeRatesMonth()
         {
-            var exchangeRates = _context.ExchangeRates
+            var exchangeRates = _context.ExchangeRates;
 
             var rates = exchangeRates.Where(er => er.MonthID == null).Select(eRates => new YearViewModel
             {
@@ -186,6 +180,77 @@ namespace DTID.Controllers
         private bool ExchangeRateExists(int id)
         {
             return _context.ExchangeRates.Any(e => e.ID == id);
+        }
+
+        [HttpGet("Download")] //api/ExchangeRates/Download
+        public async Task<IActionResult> OnPostExport()
+        {
+            string sWebRootFolder = _hostingEnvironment.WebRootPath;
+            string sFileName = @"excels/demo.xlsx";
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook = new XSSFWorkbook();
+                ISheet monthSheet = workbook.CreateSheet("Monthly");
+                IRow monthRowLabels = monthSheet.CreateRow(0);
+                monthRowLabels.CreateCell(0).SetCellValue("Year");
+                monthRowLabels.CreateCell(1).SetCellValue("Month");
+                monthRowLabels.CreateCell(2).SetCellValue("Exchange Rate");
+                ISheet annualSheet = workbook.CreateSheet("Annual");
+                IRow annualRowLabels = annualSheet.CreateRow(0);
+                annualRowLabels.CreateCell(0).SetCellValue("Year");
+                annualRowLabels.CreateCell(1).SetCellValue("Exchange Rate");
+
+                var exchangeRates = _context.ExchangeRates;
+
+                var rates = exchangeRates.Where(er => er.MonthID == null).Select(eRates => new YearViewModel
+                {
+                    ID = eRates.ID,
+                    YearId = eRates.Year.ID,
+                    Name = eRates.Year.Name,
+                    Rate = eRates.Rate,
+                    Months = exchangeRates.Where(eRate => eRate.MonthID != null).Where(eRate => eRate.YearId == eRates.YearId).Select(mERate => new MonthViewModel
+                    {
+                        ID = mERate.ID,
+                        MonthId = mERate.Month.ID,
+                        YearId = mERate.Year.ID,
+                        YearName = mERate.Year.Name,
+                        Name = mERate.Month.Name,
+                        Rate = mERate.Rate
+                    }).GroupBy(c => c.MonthId).Select(n => n.First()).ToList()
+                }).GroupBy(c => c.YearId).Select(n => n.First()).ToList();
+
+                var i = 1;
+
+                foreach (var rate in rates)
+                {
+                    IRow annualRow = annualSheet.CreateRow(i);
+
+                    annualRow.CreateCell(0).SetCellValue(rate.Name);
+                    annualRow.CreateCell(1).SetCellValue(rate.Rate);
+                    
+                    foreach (var month in rate.Months)
+                    {
+                        IRow monthRow = monthSheet.CreateRow(i);
+
+                        monthRow.CreateCell(0).SetCellValue(month.YearName);
+                        monthRow.CreateCell(1).SetCellValue(month.Name);
+                        monthRow.CreateCell(2).SetCellValue(month.Rate);
+                    }
+
+                    i++;
+                }
+
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            var newFileName = "EXCHANGE_RATE_" + DateTime.Now.ToString("MM-dd-yyyy_hh:mm_tt") + ".xlsx";
+            return File(memory, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", newFileName);
         }
     }
 }

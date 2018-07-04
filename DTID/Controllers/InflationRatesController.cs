@@ -34,13 +34,13 @@ namespace DTID.Controllers
         {
             var inflationRates = _context.InflationRates;
 
-            var rates = inflationRates.Where(rate => rate.Month != null).Select(rate => new YearViewModel
+            var rates = inflationRates.Where(rate => rate.MonthID == null).Select(rate => new YearViewModel
             {
                 ID = rate.ID,
                 YearId = rate.Year.ID,
                 Name = rate.Year.Name,
                 Rate = rate.Rate,
-                Months = inflationRates.Where(monthRate => monthRate.Month != null).Where(monthRate => monthRate.Year.ID == rate.Year.ID).Select(monthRate => new MonthViewModel
+                Months = inflationRates.Where(monthRate => monthRate.MonthID != null).Where(monthRate => monthRate.Year.ID == rate.Year.ID).Select(monthRate => new MonthViewModel
                 {
                     ID = monthRate.ID,
                     MonthId = monthRate.Month.ID,
@@ -192,22 +192,21 @@ namespace DTID.Controllers
             var memory = new MemoryStream();
             using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
             {
-                IWorkbook workbook;
-                workbook = new XSSFWorkbook();
+                IWorkbook workbook = new XSSFWorkbook();
                 ISheet annualSheet = workbook.CreateSheet("Annual");
                 IRow annualRow = annualSheet.CreateRow(0);
-                IRow annualRowFields = annualSheet.CreateRow(2);
+                IRow annualRowLabel = annualSheet.CreateRow(2);
                 ISheet monthlySheet = workbook.CreateSheet("Monthly");
                 IRow monthlyRow = monthlySheet.CreateRow(0);
-                IRow monthlyRowFields = monthlySheet.CreateRow(2);
+                IRow monthlyRowLabel = monthlySheet.CreateRow(2);
 
                 var inflationRates = _context.InflationRates.Include(iRate => iRate.Year).Include(iRate => iRate.Month);
 
                 var annualInflationRates = inflationRates.Where(iRate => iRate.Month == null).GroupBy(iRate => iRate.YearId).Select(iRate => iRate.First());
 
                 annualRow.CreateCell(0).SetCellValue("Statistics on Inflation Rate");
-                annualRowFields.CreateCell(0).SetCellValue("Year");
-                annualRowFields.CreateCell(1).SetCellValue("Inflation Rate");
+                annualRowLabel.CreateCell(0).SetCellValue("Year");
+                annualRowLabel.CreateCell(1).SetCellValue("Inflation Rate");
 
                 var i = 3;
 
@@ -222,9 +221,9 @@ namespace DTID.Controllers
                 }
 
                 monthlyRow.CreateCell(0).SetCellValue("Statistics on Inflation Rate");
-                monthlyRowFields.CreateCell(0).SetCellValue("Year");
-                monthlyRowFields.CreateCell(1).SetCellValue("Month");
-                monthlyRowFields.CreateCell(2).SetCellValue("Inflation Rate");
+                monthlyRowLabel.CreateCell(0).SetCellValue("Year");
+                monthlyRowLabel.CreateCell(1).SetCellValue("Month");
+                monthlyRowLabel.CreateCell(2).SetCellValue("Inflation Rate");
 
                 var monthlyInflationRates = inflationRates.Where(rate => rate.Month != null).Select(rate => new YearViewModel
                 {

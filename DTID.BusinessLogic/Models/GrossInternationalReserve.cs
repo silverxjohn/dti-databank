@@ -9,7 +9,7 @@ namespace DTID.BusinessLogic.Models
         public int ID { get; set; }
         public int YearID { get; set; }
         public Year Year { get; set; }
-        public int MonthID { get; set; }
+        public int? MonthID { get; set; }
         public Month Month { get; set; }
         public double Rate { get; set; }
         public bool IsApproved { get; set; }
