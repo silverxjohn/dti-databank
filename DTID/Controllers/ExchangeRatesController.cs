@@ -229,12 +229,12 @@ namespace DTID.Controllers
 
                     annualRow.CreateCell(0).SetCellValue(rate.Name);
                     annualRow.CreateCell(1).SetCellValue(rate.Rate);
-                    
+
                     foreach (var month in rate.Months)
                     {
                         IRow monthRow = monthSheet.CreateRow(i);
 
-                        monthRow.CreateCell(0).SetCellValue(month.YearName);
+                        monthRow.CreateCell(0).SetCellValue(Int32.Parse(month.YearName));
                         monthRow.CreateCell(1).SetCellValue(month.Name);
                         monthRow.CreateCell(2).SetCellValue(month.Rate);
                     }
