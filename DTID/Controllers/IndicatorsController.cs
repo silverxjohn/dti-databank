@@ -68,7 +68,15 @@ namespace DTID.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(indicator).State = EntityState.Modified;
+            if (!IndicatorExists(id))
+            {
+                return NotFound();
+            }
+
+            var indica = _context.Indicators.Find(id);
+            indica.Description = indicator.Description;
+
+            _context.Entry(indica).State = EntityState.Modified;
 
             try
             {

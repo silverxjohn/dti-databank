@@ -64,7 +64,7 @@ namespace DTID.Controllers
         [HttpGet("Annual")]
         public IEnumerable<YearViewModel> GetExchangeRatesMonth()
         {
-            var exchangeRates = _context.ExchangeRates
+            var exchangeRates = _context.ExchangeRates;
 
             var rates = exchangeRates.Where(er => er.MonthID == null).Select(eRates => new YearViewModel
             {
