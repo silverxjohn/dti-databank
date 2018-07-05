@@ -307,7 +307,7 @@ namespace DTID.Controllers
         }
 
         [HttpDelete("{id}/Category/{categoryId}/Row/{rowId}")]
-        public async Task<IActionResult> DeleteData([FromRoute] int id, [FromRoute] int categoryId, [FromRoute] int rowId)
+        public IActionResult DeleteData([FromRoute] int id, [FromRoute] int categoryId, [FromRoute] int rowId)
         {
             if (!ModelState.IsValid)
             {
@@ -318,7 +318,7 @@ namespace DTID.Controllers
 
             _context.ColumnValues.RemoveRange(values);
 
-            await _context.SaveChangesAsync();
+            _context.SaveChangesAsync();
 
             return Ok();
         }

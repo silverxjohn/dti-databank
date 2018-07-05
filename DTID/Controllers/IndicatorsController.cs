@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DTID.Data;
 using DTID.BusinessLogic.Models;
+using DTID.BusinessLogic.ViewModels.IndicatorViewModels;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
 
 namespace DTID.Controllers
 {
@@ -15,10 +18,12 @@ namespace DTID.Controllers
     public class IndicatorsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IHostingEnvironment _hostingEnvironment;
 
-        public IndicatorsController(ApplicationDbContext context)
+        public IndicatorsController(ApplicationDbContext context, IHostingEnvironment hostingEnvironment)
         {
             _context = context;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         // GET: api/Indicators
@@ -56,14 +61,14 @@ namespace DTID.Controllers
 
         // PUT: api/Indicators/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutIndicator([FromRoute] int id, [FromBody] Indicator indicator)
+        public async Task<IActionResult> PutIndicator([FromRoute] int id, [FromBody] PutIndicatorViewModel vm)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != indicator.ID)
+            if (id != vm.ID)
             {
                 return BadRequest();
             }
@@ -73,10 +78,34 @@ namespace DTID.Controllers
                 return NotFound();
             }
 
-            var indica = _context.Indicators.Find(id);
-            indica.Description = indicator.Description;
+            var indicator = _context.Indicators.Find(id);
+            indicator.Description = vm.Description;
 
-            _context.Entry(indica).State = EntityState.Modified;
+            #region "File Upload"
+            //if (vm.File.Length > 0)
+            //{
+            //    var fileSplit = vm.File.FileName.Split(".");
+            //    var fileExtension = fileSplit[fileSplit.Length - 1];
+
+            //    var sourceFile = new SourceFile
+            //    {
+            //        OriginalName = vm.File.FileName,
+            //        Indicator = indicator
+            //    };
+            //    sourceFile.Name = $"{sourceFile.Name}.{fileExtension}";
+            //    indicator.Attachment = sourceFile;
+
+            //    var path = Path.Combine(_hostingEnvironment.WebRootPath, "pdfs", sourceFile.Name);
+
+            //    using (var stream = new FileStream(path, FileMode.Create))
+            //    {
+            //        vm.File.CopyTo(stream);
+            //        stream.Position = 0;
+            //    }
+            //}
+            #endregion
+
+            _context.Entry(indicator).State = EntityState.Modified;
 
             try
             {

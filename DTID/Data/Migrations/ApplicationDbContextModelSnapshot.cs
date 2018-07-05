@@ -301,7 +301,7 @@ namespace DTID.Data.Migrations
 
                     b.Property<bool>("IsApproved");
 
-                    b.Property<int>("MonthID");
+                    b.Property<int?>("MonthID");
 
                     b.Property<double>("Rate");
 
@@ -862,8 +862,7 @@ namespace DTID.Data.Migrations
                 {
                     b.HasOne("DTID.BusinessLogic.Models.Month", "Month")
                         .WithMany()
-                        .HasForeignKey("MonthID")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("MonthID");
 
                     b.HasOne("DTID.BusinessLogic.Models.Year", "Year")
                         .WithMany()
