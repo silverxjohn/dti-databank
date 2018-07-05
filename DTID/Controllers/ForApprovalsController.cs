@@ -23,10 +23,25 @@ namespace DTID.Controllers
         }
 
         // GET: api/ForApprovals
-        [HttpGet]
-        public IEnumerable<ForApproval> GetForApproval()
+        [HttpGet("{id}/User/{roleId}")]
+        public IEnumerable<ForApproval> GetForApproval([FromRoute] int id, [FromRoute] int roleId)
         {
-            return _context.ForApproval.Include(app => app.User).Include(app => app.CannedIndicator).ToList();
+            var canApprove = _context.PermissionRole.Where(pr => pr.RoleID == roleId).Select(pr => pr.Permission).Any(pr => pr.ID == 25);
+
+            var canModify = _context.PermissionRole.Where(pr => pr.RoleID == roleId).Select(pr => pr.Permission).Any(pr => pr.ID == 36);
+
+            var requests = new List<ForApproval>();
+
+            if (canApprove)
+            {
+                requests = _context.ForApproval.Include(app => app.User).Include(app => app.CannedIndicator).ToList();
+            } else
+            {
+                requests = _context.ForApproval.Where(app => app.UserID == id).Include(app => app.User).Include(app => app.CannedIndicator).ToList();
+            }
+
+
+            return requests;
         }
 
         // GET: api/ForApprovals/5
