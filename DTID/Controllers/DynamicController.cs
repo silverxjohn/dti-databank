@@ -104,21 +104,21 @@ namespace DTID.Controllers
         }
 
         [HttpPost("upload")]
-        public IActionResult UploadExcel(IFormFile file)
+        public IActionResult UploadExcel(UploadDynamicViewModel vm)
         {
-            if (file.Length <= 0)
+            if (vm.File.Length <= 0)
             {
                 return BadRequest();
             }
 
-            var fileSplit = file.FileName.Split(".");
+            var fileSplit = vm.File.FileName.Split(".");
             var fileExtension = fileSplit[fileSplit.Length - 1];
 
             Indicator indicator = null;
 
             var sourceFile = new SourceFile
             {
-                OriginalName = file.FileName
+                OriginalName = vm.File.FileName
             };
             sourceFile.Name = $"{sourceFile.Name}.{fileExtension}";
 
@@ -126,7 +126,7 @@ namespace DTID.Controllers
 
             using (var stream = new FileStream(path, FileMode.Create))
             {
-                file.CopyTo(stream);
+                vm.File.CopyTo(stream);
                 stream.Position = 0;
 
                 var fileName = String.Join(".", fileSplit.Skip(0).Take(fileSplit.Length - 1));
@@ -138,10 +138,11 @@ namespace DTID.Controllers
                 indicator = new Indicator
                 {
                     Name = fileName,
-                    File = sourceFile
+                    File = sourceFile,
+                    ParentID = vm.FolderId
                 };
 
-                foreach (var sheet in GetSheet(file, stream))
+                foreach (var sheet in GetSheet(vm.File, stream))
                 {
                     var category = new Category
                     {
@@ -161,7 +162,13 @@ namespace DTID.Controllers
                     _context.Categories.Add(category);
                 }
 
+                var indicatorData = new IndicatorData
+                {
+                    Indicator = indicator,
+                    Data = "{\"graphs\": [], \"tables\": []}"
+                };
                 _context.Indicators.Add(indicator);
+                _context.IndicatorDatas.Add(indicatorData);
             }
 
             _context.SaveChanges();

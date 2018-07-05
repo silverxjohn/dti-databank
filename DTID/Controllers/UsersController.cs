@@ -93,7 +93,14 @@ namespace DTID.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(user).State = EntityState.Modified;
+            var account = _context.Users.Find(id);
+            account.Contact = user.Contact;
+            account.Email = user.Email;
+            account.FirstName = user.FirstName;
+            account.LastName = user.LastName;
+            account.RoleID = user.RoleID;
+
+            _context.Entry(account).State = EntityState.Modified;
 
             try
             {

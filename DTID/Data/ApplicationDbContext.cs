@@ -38,6 +38,7 @@ namespace DTID.Data
         public DbSet<ForApproval> ForApproval { get; set; }
         public DbSet<CannedIndicator> CannedIndicator { get; set; }
         public DbSet<BoiPeza> BoiPezas { get; set; }
+        public DbSet<IndicatorData> IndicatorDatas { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)

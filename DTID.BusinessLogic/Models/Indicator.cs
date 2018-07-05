@@ -11,6 +11,7 @@ namespace DTID.BusinessLogic.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public SourceFile File { get; set; }
+        public int? ParentID { get; set; }
         public Directory Parent { get; set; }
         public List<Category> Categories { get; set; }
         public bool IsActive { get; set; }

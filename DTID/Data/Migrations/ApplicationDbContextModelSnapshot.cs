@@ -341,6 +341,26 @@ namespace DTID.Data.Migrations
                     b.ToTable("Indicators");
                 });
 
+            modelBuilder.Entity("DTID.BusinessLogic.Models.IndicatorData", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Data");
+
+                    b.Property<DateTime>("DateCreated");
+
+                    b.Property<DateTime>("DateUpdated");
+
+                    b.Property<int?>("IndicatorID");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("IndicatorID");
+
+                    b.ToTable("IndicatorDatas");
+                });
+
             modelBuilder.Entity("DTID.BusinessLogic.Models.Industry", b =>
                 {
                     b.Property<int>("ID")
@@ -880,6 +900,13 @@ namespace DTID.Data.Migrations
                     b.HasOne("DTID.BusinessLogic.Models.Directory", "Parent")
                         .WithMany("Indicators")
                         .HasForeignKey("ParentID");
+                });
+
+            modelBuilder.Entity("DTID.BusinessLogic.Models.IndicatorData", b =>
+                {
+                    b.HasOne("DTID.BusinessLogic.Models.Indicator", "Indicator")
+                        .WithMany()
+                        .HasForeignKey("IndicatorID");
                 });
 
             modelBuilder.Entity("DTID.BusinessLogic.Models.Industry", b =>

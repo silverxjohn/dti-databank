@@ -42,6 +42,14 @@
     <Compile Remove="Data\Migrations\20180702112725_Initial.Designer.cs" />
     <Compile Remove="Data\Migrations\20180704032001_Initial.cs" />
     <Compile Remove="Data\Migrations\20180704032001_Initial.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180705020253_Initial.cs" />
+    <Compile Remove="Data\Migrations\20180705020253_Initial.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180706044824_Initial.cs" />
+    <Compile Remove="Data\Migrations\20180706044824_Initial.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180710073151_IndicatorData.cs" />
+    <Compile Remove="Data\Migrations\20180710073151_IndicatorData.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180710074237_AddTimestamps.cs" />
+    <Compile Remove="Data\Migrations\20180710074237_AddTimestamps.Designer.cs" />
   </ItemGroup>
 
 
