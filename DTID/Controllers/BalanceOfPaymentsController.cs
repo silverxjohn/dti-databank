@@ -289,7 +289,7 @@ namespace DTID.Controllers
                 MonthId = monthBops.Month.ID,
                 Name = monthBops.Month.Name,
                 BalanceOfPayments = monthBops.BalanceOfPayments
-            }).OrderBy(z => z.YearId).GroupBy(mz => mz.MonthId).Select(z => z.First()).ToList();
+            }).OrderBy(z => z.YearId).GroupBy(mz => new { mz.YearId, mz.MonthId}).Select(z => z.First()).ToList();
 
             return monthBalanceOfPayments;
         }
@@ -304,7 +304,7 @@ namespace DTID.Controllers
                 QuarterId = quarterBops.Quarter.ID,
                 Name = quarterBops.Quarter.Name,
                 BalanceOfPayments = quarterBops.BalanceOfPayments
-            }).OrderBy(z => z.YearId).ToList();
+            }).OrderBy(z => z.YearId).GroupBy(mz => new { mz.YearId, mz.QuarterId }).Select(z => z.First()).ToList();
 
             return quarterBalanceOfPayments;
         }

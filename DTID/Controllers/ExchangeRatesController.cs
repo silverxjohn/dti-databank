@@ -225,7 +225,7 @@ namespace DTID.Controllers
                 YearId = eRates.Year.ID,
                 Name = eRates.Year.Name,
                 Rate = eRates.Rate,
-            }).ToList();
+            }).GroupBy(eRates => eRates.YearId).Select(eRates => eRates.First()).ToList();
 
             return annualExchangeRates;
         }
@@ -240,7 +240,7 @@ namespace DTID.Controllers
                 YearName = mERate.Year.Name,
                 Name = mERate.Month.Name,
                 Rate = mERate.Rate
-            }).GroupBy(c => c.YearId).Select(n => n.First()).ToList();
+            }).GroupBy(c => new { c.YearId, c.MonthId }).Select(n => n.First()).ToList();
 
             return monthlyExchangeRates;
         }
