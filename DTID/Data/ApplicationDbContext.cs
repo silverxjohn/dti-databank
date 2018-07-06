@@ -39,6 +39,8 @@ namespace DTID.Data
         public DbSet<CannedIndicator> CannedIndicator { get; set; }
         public DbSet<BoiPeza> BoiPezas { get; set; }
         public DbSet<IndicatorData> IndicatorDatas { get; set; }
+        public DbSet<Interpretation> Interpretations { get; set; }
+        public DbSet<Attachment> Attachments { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
