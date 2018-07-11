@@ -8,10 +8,11 @@ namespace DTID.BusinessLogic.Models
     public class Attachment
     {
         public int ID { get; set; }
-        public int InterpretationId { get; set; }
+        public int? InterpretationId { get; set; }
+        public int? IndicatorId { get; set; }
         public Interpretation Interpretation { get; set; }
         public string HashedName { get; set; }
-        public string Filename { get; set; }
+        public string Filename { get; set; } 
         public string Mime { get; set; }
         public string Extension { get; set; }
         public DateTime DateCreated { get; set; }
