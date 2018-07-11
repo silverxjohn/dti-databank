@@ -9,5 +9,8 @@ namespace DTID.BusinessLogic.ViewModels.InterpretationViewModel
         public int ID { get; set; }
         public string Filename { get; set; }
         public string Mime { get; set; }
+        public string HashedName { get; set; }
+        public string Extension { get; set; }
+        public string NewName { get; set; }
     }
 }
