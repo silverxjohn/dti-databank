@@ -29,25 +29,25 @@ namespace DTID.Controllers
         }
         public IActionResult Index()
         {
-            //var salt = Hash.CreateSalt();
-            //var user = new User
-            //{
-            //    FirstName = "John",
-            //    LastName = "Doe",
-            //    Email = "jdoe@email.com",
-            //    Password = Hash.Create("password", salt),
-            //    Salt = salt,
-            //    Contact = "afaw",
-            //    Role = new Role
-            //    {
-            //        Name = "Admin",
-            //        Description = "Admin"
-            //    }
-            //};
+            var salt = Hash.CreateSalt();
+            var user = new User
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                Email = "jdoe@email.com",
+                Password = Hash.Create("password", salt),
+                Salt = salt,
+                Contact = "afaw",
+                Role = new Role
+                {
+                    Name = "Admin",
+                    Description = "Admin"
+                }
+            };
 
-            //_context.Users.Add(user);
+            _context.Users.Add(user);
 
-            //_context.SaveChanges();
+            _context.SaveChanges();
 
             return View();
         }

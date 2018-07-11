@@ -120,15 +120,15 @@ namespace DTID.Controllers
             _context.InflationRates.Add(inflationRate);
             await _context.SaveChangesAsync();
 
-            var createdInflationRate = _context.InflationRates.Include(eR => eR.Year).Include(e => e.Month).Select(xc => new YearViewModel
-            {
-                ID = xc.ID,
-                YearId = xc.Year.ID,
-                Rate = xc.Rate,
-                Name = xc.Year.Name
-            }).FirstOrDefault(e => e.ID == inflationRate.ID);
+            //var createdInflationRate = _context.InflationRates.Include(eR => eR.Year).Include(e => e.Month).Select(xc => new YearViewModel
+            //{
+            //    ID = xc.ID,
+            //    YearId = xc.Year.ID,
+            //    Rate = xc.Rate,
+            //    Name = xc.Year.Name
+            //}).FirstOrDefault(e => e.ID == inflationRate.ID);
 
-            return Ok(createdInflationRate);
+            return Ok();
         }
 
         // DELETE: api/InflationRates/5
@@ -246,7 +246,7 @@ namespace DTID.Controllers
                 YearName = rate.Year.Name,
                 Name = rate.Month.Name,
                 Rate = rate.Rate,
-            }).GroupBy(x => x.YearId).Select(z => z.First()).ToList();
+            }).GroupBy(x => new { x.YearId, x.MonthId}).Select(z => z.First()).ToList();
 
             return monthlyInflationRates;
         }
