@@ -42,7 +42,24 @@ namespace DTID.Controllers
                 return BadRequest(ModelState);
             }
 
-            var indicator = await _context.Indicators.SingleOrDefaultAsync(m => m.ID == id);
+            var indicator = _context.Indicators.Where(i => i.ID == id).Select(i => new ResponseViewModel
+            {
+                ID = i.ID,
+                Name = i.Name,
+                Description = i.Description,
+                ParentID = i.ParentID,
+                IsActive = i.IsActive,
+                IsApproved = i.IsApproved,
+                Attachments = _context.Attachments.Where(a => a.IndicatorId == i.ID).Select(a => new AttachmentViewModel
+                {
+                    ID = a.ID,
+                    Filename = a.Filename,
+                    Mime = a.Mime,
+                    HashedName = a.HashedName,
+                    Extension = a.Extension,
+                    NewName = a.Newname
+                }).ToList()
+            }).First();
 
             if (indicator == null)
             {
@@ -61,7 +78,7 @@ namespace DTID.Controllers
 
         // PUT: api/Indicators/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutIndicator([FromRoute] int id, [FromBody] PutIndicatorViewModel vm)
+        public async Task<IActionResult> PutIndicator([FromRoute] int id, [FromForm] PutIndicatorViewModel vm)
         {
             if (!ModelState.IsValid)
             {
@@ -81,28 +98,31 @@ namespace DTID.Controllers
             var indicator = _context.Indicators.Find(id);
             indicator.Description = vm.Description;
 
+            _context.SaveChanges();
+
             #region "File Upload"
-            //if (vm.File.Length > 0)
-            //{
-            //    var fileSplit = vm.File.FileName.Split(".");
-            //    var fileExtension = fileSplit[fileSplit.Length - 1];
+            if (vm.File.Length > 0)
+            {
+                var fileSplit = vm.File.FileName.Split(".");
+                var fileExtension = fileSplit[fileSplit.Length - 1];
 
-            //    var sourceFile = new SourceFile
-            //    {
-            //        OriginalName = vm.File.FileName,
-            //        Indicator = indicator
-            //    };
-            //    sourceFile.Name = $"{sourceFile.Name}.{fileExtension}";
-            //    indicator.Attachment = sourceFile;
+                var attachment = new Attachment
+                {
+                    Filename = vm.File.FileName,
+                    Mime = vm.File.ContentType,
+                    Extension = fileExtension,
+                    IndicatorId = id
+                };
 
-            //    var path = Path.Combine(_hostingEnvironment.WebRootPath, "pdfs", sourceFile.Name);
+                var path = Path.Combine(_hostingEnvironment.WebRootPath, "pdfs", attachment.Newname);
 
-            //    using (var stream = new FileStream(path, FileMode.Create))
-            //    {
-            //        vm.File.CopyTo(stream);
-            //        stream.Position = 0;
-            //    }
-            //}
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    vm.File.CopyTo(stream);
+                    stream.Position = 0;
+                }
+                _context.Attachments.Add(attachment);
+            }
             #endregion
 
             _context.Entry(indicator).State = EntityState.Modified;
