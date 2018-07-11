@@ -71,9 +71,28 @@ namespace DTID.Controllers
 
         // GET: api/Indicators/all
         [HttpGet("all")]
-        public IEnumerable<Indicator> GetAllIndicator()
+        public IEnumerable<ResponseViewModel> GetAllIndicator()
         {
-            return _context.Indicators;
+            var indicator = _context.Indicators.Select(i => new ResponseViewModel
+            {
+                ID = i.ID,
+                Name = i.Name,
+                Description = i.Description,
+                ParentID = i.ParentID,
+                IsActive = i.IsActive,
+                IsApproved = i.IsApproved,
+                Attachments = _context.Attachments.Where(a => a.IndicatorId == i.ID).Select(a => new AttachmentViewModel
+                {
+                    ID = a.ID,
+                    Filename = a.Filename,
+                    Mime = a.Mime,
+                    HashedName = a.HashedName,
+                    Extension = a.Extension,
+                    NewName = a.Newname
+                }).ToList()
+            });
+
+            return indicator;
         }
 
         // PUT: api/Indicators/5
