@@ -120,7 +120,7 @@ namespace DTID.Controllers
             _context.SaveChanges();
 
             #region "File Upload"
-            if (vm.File.Length > 0)
+            if (vm.File != null && vm.File.Length > 0)
             {
                 var fileSplit = vm.File.FileName.Split(".");
                 var fileExtension = fileSplit[fileSplit.Length - 1];
