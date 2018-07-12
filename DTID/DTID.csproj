@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <UserSecretsId>aspnet-DTID-1FF7A527-38AA-48BD-9B18-3ADB38D595FB</UserSecretsId>
+    <PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
   </PropertyGroup>
 
   <ItemGroup>
@@ -50,6 +51,10 @@
     <Compile Remove="Data\Migrations\20180710073151_IndicatorData.Designer.cs" />
     <Compile Remove="Data\Migrations\20180710074237_AddTimestamps.cs" />
     <Compile Remove="Data\Migrations\20180710074237_AddTimestamps.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180710075518_Initial.cs" />
+    <Compile Remove="Data\Migrations\20180710075518_Initial.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180712012617_Initial.cs" />
+    <Compile Remove="Data\Migrations\20180712012617_Initial.Designer.cs" />
   </ItemGroup>
 
 

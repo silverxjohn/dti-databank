@@ -139,8 +139,9 @@ namespace DTID.Controllers
                 {
                     Name = fileName,
                     File = sourceFile,
-                    ParentID = vm.FolderId
                 };
+                if (vm.FolderId > 0)
+                    indicator.ParentID = vm.FolderId;
 
                 foreach (var sheet in GetSheet(vm.File, stream))
                 {
