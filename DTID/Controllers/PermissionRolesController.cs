@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DTID.BusinessLogic.Models;
 using DTID.Data;
+using DTID.BusinessLogic.ViewModels.RoleViewModel;
 
 namespace DTID.Controllers
 {
@@ -32,7 +33,7 @@ namespace DTID.Controllers
         public IEnumerable<PermissionRole> GetPermissions([FromRoute] int id)
         {
             return _context.PermissionRole.Include(permission => permission.Permission)
-                .Where(role => role.RoleID == id).ToList(); //change me
+                .Where(role => role.RoleID == id).Where(pr => pr.IsEnabled).ToList(); //change me
         }
 
         // GET: api/PermissionRoles/5
@@ -56,19 +57,25 @@ namespace DTID.Controllers
 
         // PUT: api/PermissionRoles/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPermissionRole([FromRoute] int id, [FromBody] PermissionRole permissionRole)
+        public async Task<IActionResult> PutPermissionRole([FromRoute] int id, [FromBody] PermissionRoleDataViewModel permissions)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != permissionRole.ID)
+            if (id != permissions.ID)
             {
                 return BadRequest();
             }
 
-            _context.Entry(permissionRole).State = EntityState.Modified;
+            foreach (var permission in permissions.Permissions)
+            {
+                var a = _context.PermissionRole.Where(pr => pr.PermissionID == permission.PermissionID).Where(pr => pr.RoleID == permission.RoleID).First();
+                a.IsEnabled = permission.IsEnabled;
+            }
+
+            await _context.SaveChangesAsync();
 
             try
             {

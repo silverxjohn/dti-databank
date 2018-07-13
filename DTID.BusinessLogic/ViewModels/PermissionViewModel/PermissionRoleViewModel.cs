@@ -1,10 +1,11 @@
-﻿using System;
+﻿using DTID.BusinessLogic.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DTID.BusinessLogic.Models
+namespace DTID.BusinessLogic.ViewModels.PermissionViewModel
 {
-    public class PermissionRole
+    public class PermissionRoleViewModel
     {
         public int ID { get; set; }
         public int RoleID { get; set; }
