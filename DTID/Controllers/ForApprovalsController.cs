@@ -222,6 +222,7 @@ namespace DTID.Controllers
                         _context.Entry(wage).State = EntityState.Modified;
                     }
                     break;
+
                 case (int)CannedIndicatorID.Populations:
                     var populations = _context.Populations.Where(population => !population.IsApproved);
 
@@ -231,6 +232,7 @@ namespace DTID.Controllers
                         _context.Entry(population).State = EntityState.Modified;
                     }
                     break;
+
                 case (int)CannedIndicatorID.InflationRate:
                     var inflationRates = _context.InflationRates.Where(iRate => !iRate.IsApproved);
 
@@ -240,6 +242,7 @@ namespace DTID.Controllers
                         _context.Entry(inflationRate).State = EntityState.Modified;
                     }
                     break;
+
                 case (int)CannedIndicatorID.GrossInternationalReserves:
                     var grossInternationalReserves = _context.GrossInternationalReserves.Where(GIR => !GIR.IsApproved);
 
@@ -249,6 +252,7 @@ namespace DTID.Controllers
                         _context.Entry(grossInternationalReserve).State = EntityState.Modified;
                     }
                     break;
+
                 case (int)CannedIndicatorID.ExchangeRate:
                     var exchangeRates = _context.ExchangeRates.Where(eRate => !eRate.IsApproved);
 
@@ -258,6 +262,7 @@ namespace DTID.Controllers
                         _context.Entry(exchangeRate).State = EntityState.Modified;
                     }
                     break;
+
                 case (int)CannedIndicatorID.BalanceOfPayment:
                     var balanceOfPayments = _context.BalanceOfPayments.Where(BOP => !BOP.IsApproved);
 
@@ -265,6 +270,16 @@ namespace DTID.Controllers
                     {
                         balanceOfPayment.IsApproved = true;
                         _context.Entry(balanceOfPayment).State = EntityState.Modified;
+                    }
+                    break;
+
+                case (int)CannedIndicatorID.BoiPeza:
+                    var boiPezas = _context.BoiPezas.Where(boiPeza => !boiPeza.IsApproved);
+
+                    foreach (var boiPeza in boiPezas)
+                    {
+                        boiPeza.IsApproved = true;
+                        _context.Entry(boiPeza).State = EntityState.Modified;
                     }
                     break;
 

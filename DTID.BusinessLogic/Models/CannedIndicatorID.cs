@@ -6,6 +6,7 @@ namespace DTID.BusinessLogic.Models
 {
     public enum CannedIndicatorID
     {
+        BoiPeza = 1,
         BalanceOfPayment = 2,
         ExchangeRate = 3,
         GrossInternationalReserves = 4,
