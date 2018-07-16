@@ -30,12 +30,12 @@ namespace DTID.Controllers
         [HttpGet]
         public IEnumerable<Indicator> GetIndicators()
         {
-            return _context.Indicators.Where(indicator => indicator.IsActive);
+            return _context.Indicators.Where(indicator => indicator.IsApproved);
         }
 
         // GET: api/Indicators/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetIndicator([FromRoute] int id)
+        public IActionResult GetIndicator([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {

@@ -15,6 +15,7 @@ namespace DTID.BusinessLogic.Models
         public string Comment { get; set; }
         public ApprovalStatus isApproved { get; set; }
         public int? IndicatorID { get; set; }
+        public Indicator Indicator { get; set; }
         public int? CannedIndicatorID { get; set; }
         public CannedIndicator CannedIndicator { get; set; }
     }

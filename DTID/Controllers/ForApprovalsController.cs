@@ -34,15 +34,25 @@ namespace DTID.Controllers
 
             if (canApprove)
             {
-                requests = _context.ForApproval.Include(app => app.User)
-                    .Include(app => app.CannedIndicator).OrderByDescending(i => i.DateCreated)
-                    .GroupBy(i => i.IndicatorID).Select(g => g.First()).ToList();
+                requests = _context.ForApproval
+                    .Include(app => app.User)
+                    .Include(app => app.CannedIndicator)
+                    .Include(app => app.Indicator)
+                    .OrderByDescending(i => i.DateCreated)
+                    .GroupBy(i => i.IndicatorID)
+                    .Select(g => g.First())
+                    .ToList();
             } else
             {
-                requests = _context.ForApproval.Where(app => app.UserID == id)
-                    .Include(app => app.User).Include(app => app.CannedIndicator)
-                    .OrderByDescending(i => i.DateCreated).GroupBy(i => i.IndicatorID)
-                    .Select(g => g.First()).ToList();
+                requests = _context.ForApproval
+                    .Where(app => app.UserID == id)
+                    .Include(app => app.User)
+                    .Include(app => app.CannedIndicator)
+                    .Include(app => app.Indicator)
+                    .OrderByDescending(i => i.DateCreated)
+                    .GroupBy(i => i.IndicatorID)
+                    .Select(g => g.First())
+                    .ToList();
             }
 
 
