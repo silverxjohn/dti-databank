@@ -28,9 +28,28 @@ namespace DTID.Controllers
 
         // GET: api/Indicators
         [HttpGet]
-        public IEnumerable<Indicator> GetIndicators()
+        public async Task<IActionResult> GetIndicators()
         {
-            return _context.Indicators.Where(indicator => indicator.IsActive);
+            var indicator = _context.Indicators.Where(i => i.IsActive).Select(i => new ResponseViewModel
+            {
+                ID = i.ID,
+                Name = i.Name,
+                Description = i.Description,
+                ParentID = i.ParentID,
+                IsActive = i.IsActive,
+                IsApproved = i.IsApproved,
+                Attachments = _context.Attachments.Where(a => a.IndicatorId == i.ID).Select(a => new AttachmentViewModel
+                {
+                    ID = a.ID,
+                    Filename = a.Filename,
+                    Mime = a.Mime,
+                    HashedName = a.HashedName,
+                    Extension = a.Extension,
+                    NewName = a.Newname
+                }).ToList()
+            });
+
+            return Ok(indicator);
         }
 
         // GET: api/Indicators/5
