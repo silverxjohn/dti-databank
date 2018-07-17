@@ -108,27 +108,15 @@ namespace DTID.Controllers
 
             foreach (var permission in permissions)
             {
-                if (permission.ID == permissionRole.PermissionID)
+                var permsRole = new PermissionRole
                 {
-                    var permsRole = new PermissionRole
-                    {
-                        RoleID = permissionRole.RoleID,
-                        PermissionID = permissionRole.PermissionID,
-                        IsEnabled = permissionRole.IsEnabled
-                    };
-                    _context.PermissionRole.Add(permsRole);
-                }
-                else
-                {
-                    var permsRole = new PermissionRole
-                    {
-                        RoleID = permissionRole.RoleID,
-                        PermissionID = permission.ID,
-                        IsEnabled = false
-                    };
-                    _context.PermissionRole.Add(permsRole);
-                }
+                    RoleID = permissionRole.RoleID,
+                    PermissionID = permission.ID,
+                    IsEnabled = permission.ID == permissionRole.PermissionID ? permissionRole.IsEnabled : false
+                };
+                _context.PermissionRole.Add(permsRole);
             }
+
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetPermissionRole", new { id = permissionRole.ID }, permissionRole);
