@@ -35,7 +35,7 @@ namespace DTID.Controllers
 
         // GET: api/Interpretations/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetInterpretation([FromRoute] int id)
+        public IActionResult GetInterpretation([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {

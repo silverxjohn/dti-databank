@@ -9,6 +9,7 @@ namespace DTID.BusinessLogic.Models
     public class IndicatorData
     {
         public int ID { get; set; }
+        public int IndicatorID { get; set; }
         public Indicator Indicator { get; set; }
         public string Data { get; set; }
         public DateTime DateCreated { get; set; }

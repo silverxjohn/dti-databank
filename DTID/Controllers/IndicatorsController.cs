@@ -220,6 +220,8 @@ namespace DTID.Controllers
             }
 
             _context.Indicators.Remove(indicator);
+            _context.ForApproval.RemoveRange(_context.ForApproval.Where(f => f.IndicatorID == indicator.ID));
+            _context.IndicatorDatas.RemoveRange(_context.IndicatorDatas.Where(i => i.IndicatorID == indicator.ID));
 
             try
             {
