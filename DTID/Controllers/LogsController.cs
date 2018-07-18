@@ -27,7 +27,7 @@ namespace DTID.Controllers
         [HttpGet]
         public IEnumerable<Log> GetLogs()
         {
-            return _context.Logs.Include(log => log.Users).OrderByDescending(logs => logs.DateCreated).ToList();
+            return _context.Logs.Include(log => log.Users).OrderByDescending(logs => logs.ID).ToList();
         }
 
         // GET: api/Logs/5

@@ -39,7 +39,7 @@ namespace DTID.Controllers
                     .Include(app => app.CannedIndicator)
                     .Include(app => app.Indicator)
                     .OrderByDescending(i => i.DateCreated)
-                    .GroupBy(i => i.IndicatorID)
+                    .GroupBy(i => i.ID)
                     .Select(g => g.First())
                     .ToList();
             } else
@@ -49,7 +49,7 @@ namespace DTID.Controllers
                     .Include(app => app.User)
                     .Include(app => app.CannedIndicator)
                     .Include(app => app.Indicator)
-                    .OrderByDescending(i => i.DateCreated)
+                    .OrderByDescending(i => i.ID)
                     .GroupBy(i => i.IndicatorID)
                     .Select(g => g.First())
                     .ToList();
