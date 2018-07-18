@@ -101,17 +101,32 @@ namespace DTID.Controllers
             {
                 return BadRequest(ModelState);
             }
+            var roleToCreate = new Role
+            {
+                Name = role.Name,
+                Description = role.Description
+            };
 
-            _context.Roles.Add(role);
+            _context.Roles.Add(roleToCreate);
+
+            var permissions = _context.Permission;
+
+            foreach (var permission in permissions)
+            {
+                var permissionRoleToCreate = new PermissionRole
+                {
+                    PermissionID = permission.ID,
+                    RoleID = roleToCreate.ID,
+                    IsEnabled = false
+                };
+                _context.PermissionRole.Add(permissionRoleToCreate);
+            }
+            
             await _context.SaveChangesAsync();
-
-            var roles = new Role();
-
-            roles.Name = role.Name;
 
             _logger.Log(Logger.Action.Create, role.Name);
 
-            return CreatedAtAction("GetRole", new { id = role.ID }, role);
+            return CreatedAtAction("GetRole", new { id = roleToCreate.ID }, roleToCreate);
         }
 
         // DELETE: api/Roles/5
