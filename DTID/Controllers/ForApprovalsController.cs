@@ -93,9 +93,8 @@ namespace DTID.Controllers
             }
 
             var forApprovals = _context.ForApproval.Where(indicator => indicator.ID == id);
-
             foreach (var forApp in forApprovals) {
-                forApp.UserID = forApproval.UserID; //Int32.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == "id").Value);
+                forApp.UserID = forApproval.UserID;
                 forApp.isApproved = forApproval.isApproved;
                 forApp.Comment = forApproval.Comment;
                 forApp.DateCreated = DateTime.Now;

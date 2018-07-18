@@ -24,7 +24,7 @@ namespace DTID.Controllers
         public UsersController(ApplicationDbContext context)
         {
             _context = context;
-            _logger = new LogHelper(context);
+            _logger = new LogHelper(context, User);
         }
 
         // GET: api/Users

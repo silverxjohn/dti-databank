@@ -16,12 +16,11 @@ namespace DTID.Controllers
     public class RolesController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly LogHelper _logger;
+        private LogHelper _logger;
 
         public RolesController(ApplicationDbContext context)
         {
             _context = context;
-            _logger = new LogHelper(context);
         }
 
         // GET: api/Roles
@@ -64,6 +63,8 @@ namespace DTID.Controllers
                 return BadRequest();
             }
 
+            _logger = new LogHelper(_context, User);
+
             _context.Entry(role).State = EntityState.Modified;
 
             try
@@ -101,6 +102,9 @@ namespace DTID.Controllers
             {
                 return BadRequest(ModelState);
             }
+
+            _logger = new LogHelper(_context, HttpContext.User);
+
             var roleToCreate = new Role
             {
                 Name = role.Name,
@@ -137,6 +141,8 @@ namespace DTID.Controllers
             {
                 return BadRequest(ModelState);
             }
+
+            _logger = new LogHelper(_context, User);
 
             var role = await _context.Roles.SingleOrDefaultAsync(m => m.ID == id);
             if (role == null)
