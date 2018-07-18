@@ -1,8 +1,10 @@
 ﻿using DTID.Data;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,20 +12,14 @@ namespace DTID.Logger
 {
     public class LogHelper
     {
-        private List<ILogger> FileLogger;
-        private List<ILogger> DatabaseLogger;
+        private List<ILogger> Logger;
 
-        public LogHelper(ApplicationDbContext context)
+        public LogHelper(ApplicationDbContext context, ClaimsPrincipal user)
         {
-            FileLogger = new List<ILogger>{
+            Logger = new List<ILogger>{
                 new FileLogger(),
-                new DatabaseLogger(context)
+                new DatabaseLogger(context, user)
             };
-
-            //DatabaseLogger = new List<ILogger>
-            //{
-                
-            //};
         }
 
         public void Log(Action action, object model, [CallerFilePath] string module = null)
@@ -55,7 +51,7 @@ namespace DTID.Logger
 
         private void WriteLog(string message)
         {
-            foreach (var logger in FileLogger) {
+            foreach (var logger in Logger) {
                 logger.Log(message);
             }
         }
