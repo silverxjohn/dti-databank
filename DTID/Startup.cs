@@ -55,7 +55,10 @@ namespace DTID
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
 
-            services.AddMvc();
+            services.AddMvc().AddJsonOptions(options =>
+            {
+                options.SerializerSettings.DateFormatString = "MM/dd/yyyy hh:mm tt";
+            });
             
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
             {
