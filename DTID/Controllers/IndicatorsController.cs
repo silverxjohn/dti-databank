@@ -219,8 +219,18 @@ namespace DTID.Controllers
                 return NotFound();
             }
 
+            var approval = _context.ForApproval.FirstOrDefault(f => f.IndicatorID == indicator.ID);
+            if (approval != null)
+            {
+                approval.isApproved = ApprovalStatus.Removed;
+                approval.Activity = indicator.Name;
+                approval.IndicatorID = null;
+
+                _context.Entry(approval).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+            }
+
             _context.Indicators.Remove(indicator);
-            _context.ForApproval.RemoveRange(_context.ForApproval.Where(f => f.IndicatorID == indicator.ID));
             _context.IndicatorDatas.RemoveRange(_context.IndicatorDatas.Where(i => i.IndicatorID == indicator.ID));
 
             try

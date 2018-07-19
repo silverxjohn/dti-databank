@@ -8,6 +8,7 @@ namespace DTID.BusinessLogic.Models
     {
         Approved = 1,
         Disapproved = 2,
-        New = 3
+        New = 3,
+        Removed = 4
     }
 }
