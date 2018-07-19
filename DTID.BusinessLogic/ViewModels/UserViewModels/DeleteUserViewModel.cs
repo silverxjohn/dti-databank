@@ -4,9 +4,8 @@ using System.Text;
 
 namespace DTID.BusinessLogic.ViewModels.UserViewModels
 {
-    public class ChangePasswordViewModel
+    public class DeleteUserViewModel
     {
-        public string Password { get; set; }
         public int UserID { get; set; }
     }
 }

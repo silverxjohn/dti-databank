@@ -14,11 +14,11 @@ namespace DTID.Logger
     {
         private List<ILogger> Logger;
 
-        public LogHelper(ApplicationDbContext context, ClaimsPrincipal user)
+        public LogHelper(ApplicationDbContext context, int userId)
         {
             Logger = new List<ILogger>{
                 new FileLogger(),
-                new DatabaseLogger(context, user)
+                new DatabaseLogger(context, userId)
             };
         }
 

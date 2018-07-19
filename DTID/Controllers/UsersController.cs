@@ -19,12 +19,11 @@ namespace DTID.Controllers
     public class UsersController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly LogHelper _logger;
+        private LogHelper _logger;
 
         public UsersController(ApplicationDbContext context)
         {
             _context = context;
-            _logger = new LogHelper(context, User);
         }
 
         // GET: api/Users
@@ -76,22 +75,41 @@ namespace DTID.Controllers
 
             await _context.SaveChangesAsync();
 
+            _logger = new LogHelper(_context, vm.UserID);
+
+            _logger.Log(Logger.Action.Update, user);
+
             return Ok();
         }
 
         // PUT: api/Users/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser([FromRoute] int id, [FromBody] User user)
+        public async Task<IActionResult> PutUser([FromRoute] int id, [FromBody] UserViewModel vm)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != user.ID)
+            if (id != vm.ID)
             {
                 return BadRequest();
             }
+
+            var user = new User
+            {
+                ID = vm.ID,
+                LastName = vm.LastName,
+                FirstName = vm.FirstName,
+                Email = vm.Email,
+                Password = vm.Password,
+                Salt = vm.Salt,
+                Contact = vm.Contact,
+                RoleID = vm.RoleID,
+                Role = vm.Role,
+                DateCreated = vm.DateCreated,
+                DateUpdated = vm.DateUpdated
+            };
 
             var account = _context.Users.Find(id);
             account.Contact = user.Contact;
@@ -120,6 +138,8 @@ namespace DTID.Controllers
 
             var updatedUser = _context.Users.Include(u => u.Role).FirstOrDefault(r => r.ID == id);
 
+            _logger = new LogHelper(_context, vm.UserID);
+
             _logger.Log(Logger.Action.Update, updatedUser);
 
             return Ok(updatedUser);
@@ -127,12 +147,27 @@ namespace DTID.Controllers
 
         // POST: api/Users
         [HttpPost]
-        public async Task<IActionResult> PostUser([FromBody] User user)
+        public async Task<IActionResult> PostUser([FromBody] UserViewModel vm)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+
+            var user = new User
+            {
+                ID = vm.ID,
+                LastName = vm.LastName,
+                FirstName = vm.FirstName,
+                Email = vm.Email,
+                Password = vm.Password,
+                Salt = vm.Salt,
+                Contact = vm.Contact,
+                RoleID = vm.RoleID,
+                Role = vm.Role,
+                DateCreated = vm.DateCreated,
+                DateUpdated = vm.DateUpdated
+            };
 
             user.Salt = Hash.CreateSalt();
             user.Password = Hash.Create(user.Password, user.Salt);
@@ -141,6 +176,8 @@ namespace DTID.Controllers
             await _context.SaveChangesAsync();
             var user1 = _context.Users.Include(u => u.Role).SingleOrDefault(u => u.ID == user.ID);
 
+            _logger = new LogHelper(_context, vm.UserID);
+
             _logger.Log(Logger.Action.Create, user1);
 
             return CreatedAtAction("GetUser", new { id = user.ID }, user1);
@@ -148,7 +185,7 @@ namespace DTID.Controllers
 
         // DELETE: api/Users/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser([FromRoute] int id)
+        public async Task<IActionResult> DeleteUser([FromRoute] int id, [FromBody] DeleteUserViewModel vm)
         {
             if (!ModelState.IsValid)
             {
@@ -163,6 +200,8 @@ namespace DTID.Controllers
 
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
+
+            _logger = new LogHelper(_context, vm.UserID);
 
             _logger.Log(Logger.Action.Delete, user);
 

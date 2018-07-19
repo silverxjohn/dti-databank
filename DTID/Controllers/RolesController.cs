@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using DTID.BusinessLogic.Models;
 using DTID.Data;
 using DTID.Logger;
+using DTID.BusinessLogic.ViewModels.RoleViewModels;
 
 namespace DTID.Controllers
 {
@@ -51,19 +52,28 @@ namespace DTID.Controllers
 
         // PUT: api/Roles/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutRole([FromRoute] int id, [FromBody] Role role)
+        public async Task<IActionResult> PutRole([FromRoute] int id, [FromBody] RoleViewModel vm)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != role.ID)
+            if (id != vm.ID)
             {
                 return BadRequest();
             }
 
-            _logger = new LogHelper(_context, User);
+            var role = new Role
+            {
+                ID = vm.ID,
+                Name = vm.Name,
+                Description = vm.Description,
+                DateCreated = vm.DateCreated,
+                DateUpdated = vm.DateUpdated
+            };
+
+            _logger = new LogHelper(_context, vm.UserID);
 
             _context.Entry(role).State = EntityState.Modified;
 
@@ -82,28 +92,33 @@ namespace DTID.Controllers
                     throw;
                 }
             }
-
-            var roles = new Role();
-
-            roles.Name = role.Name;
             
             var updatedRole = _context.Roles.FirstOrDefault(r => r.ID == id);
 
-            _logger.Log(Logger.Action.Update, roles.Name);
+            _logger.Log(Logger.Action.Update, role.Name);
 
             return Ok(updatedRole);
         }
 
         // POST: api/Roles
         [HttpPost]
-        public async Task<IActionResult> PostRole([FromBody] Role role)
+        public async Task<IActionResult> PostRole([FromBody] RoleViewModel vm)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _logger = new LogHelper(_context, HttpContext.User);
+            var role = new Role
+            {
+                ID = vm.ID,
+                Name = vm.Name,
+                Description = vm.Description,
+                DateCreated = vm.DateCreated,
+                DateUpdated = vm.DateUpdated
+            };
+
+            _logger = new LogHelper(_context, vm.UserID);
 
             var roleToCreate = new Role
             {
@@ -135,14 +150,14 @@ namespace DTID.Controllers
 
         // DELETE: api/Roles/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteRole([FromRoute] int id)
+        public async Task<IActionResult> DeleteRole([FromRoute] int id, [FromBody] DeleteRoleViewModel vm)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _logger = new LogHelper(_context, User);
+            _logger = new LogHelper(_context, vm.UserID);
 
             var role = await _context.Roles.SingleOrDefaultAsync(m => m.ID == id);
             if (role == null)

@@ -14,9 +14,9 @@ namespace DTID.Logger
     class DatabaseLogger : ILogger
     {
         private readonly ApplicationDbContext _context;
-        private readonly ClaimsPrincipal _user;
+        private readonly int _user;
 
-        public DatabaseLogger(ApplicationDbContext context, ClaimsPrincipal user)
+        public DatabaseLogger(ApplicationDbContext context, int user)
         {
             _context = context;
             _user = user;
@@ -24,10 +24,9 @@ namespace DTID.Logger
         
         public void Log(string message)
         {
-            //var id = Int32.Parse(_user.Claims.FirstOrDefault(c => c.Type == "id").Value);
             var log = new Log
             {
-                UserID = 1, //change me
+                UserID = _user,
                 Action = message
             };
 
