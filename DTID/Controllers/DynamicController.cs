@@ -141,7 +141,7 @@ namespace DTID.Controllers
         }
 
         [HttpPost("upload")]
-        public IActionResult UploadExcel(UploadDynamicViewModel vm)
+        public async Task<IActionResult> UploadExcel(UploadDynamicViewModel vm)
         {
             if (vm.File.Length <= 0)
             {
@@ -176,9 +176,14 @@ namespace DTID.Controllers
                 {
                     Name = fileName,
                     File = sourceFile,
+                    Description = ""
                 };
+                
                 if (vm.FolderId > 0)
                     indicator.ParentID = vm.FolderId;
+
+                _context.Indicators.Add(indicator);
+                await _context.SaveChangesAsync();
 
                 foreach (var sheet in GetSheet(vm.File, stream))
                 {
@@ -188,16 +193,15 @@ namespace DTID.Controllers
                         Indicator = indicator
                     };
 
+                    _context.Categories.Add(category);
+                    await _context.SaveChangesAsync();
+
                     IRow headerRow = sheet.GetRow(0);
 
-                    var columns = GetHeaderColumn(headerRow, sheet.GetRow(1));
+                    var columns = await GetHeaderColumn(headerRow, sheet.GetRow(1), category);
                     var values = GetContents(sheet, columns, headerRow.LastCellNum);
-
-                    category.Columns = columns;
                     
-                    _context.Columns.AddRange(columns);
                     _context.ColumnValues.AddRange(values);
-                    _context.Categories.Add(category);
                 }
 
                 var indicatorData = new IndicatorData
@@ -205,7 +209,6 @@ namespace DTID.Controllers
                     Indicator = indicator,
                     Data = "{\"graphs\": [], \"tables\": []}"
                 };
-                _context.Indicators.Add(indicator);
                 _context.IndicatorDatas.Add(indicatorData);
             }
 
@@ -272,7 +275,7 @@ namespace DTID.Controllers
             return values;
         }
 
-        private List<Column> GetHeaderColumn(IRow row, IRow typeRow)
+        private async Task<List<Column>> GetHeaderColumn(IRow row, IRow typeRow, Category category)
         {
             var columns = new List<Column>();
 
@@ -283,11 +286,18 @@ namespace DTID.Controllers
 
                 var type = GetColumnType(cell, typeRow.GetCell(i));
 
-                columns.Add(new Column
+                var column = new Column
                 {
                     Name = cell.ToString(),
-                    Type = type
-                });
+                    Type = type,
+                    Category = category
+                };
+
+                _context.Columns.Add(column);
+
+                await _context.SaveChangesAsync();
+
+                columns.Add(column);
             }
 
             return columns;
