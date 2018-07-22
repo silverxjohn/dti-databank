@@ -38,6 +38,7 @@ namespace DTID.Controllers
                 ParentID = i.ParentID,
                 IsActive = i.IsActive,
                 IsApproved = i.IsApproved,
+                DateApproved = _context.ForApproval.Where(f => f.IndicatorID == i.ID).OrderByDescending(a => a.DateCreated).First().DateCreated,
                 Attachments = _context.Attachments.Where(a => a.IndicatorId == i.ID).Select(a => new AttachmentViewModel
                 {
                     ID = a.ID,

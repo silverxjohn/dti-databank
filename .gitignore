@@ -261,3 +261,4 @@ __pycache__/
 *.pyc
 /DTID/wwwroot/excels/*
 /DTID/Data/Migrations/*
+/DTID/wwwroot/pdfs

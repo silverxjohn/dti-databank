@@ -17,6 +17,7 @@ namespace DTID.BusinessLogic.ViewModels.IndicatorViewModels
         public List<AttachmentViewModel> Attachments { get; set; }
         public bool IsActive { get; set; }
         public bool IsApproved { get; set; }
+        public DateTime DateApproved { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
     }
